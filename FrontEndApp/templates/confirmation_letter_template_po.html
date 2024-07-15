@@ -1,0 +1,237 @@
+{% load static %}
+{% load FrontEndApp_tags %}
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Confirma&#231;&#227;o de Transporte no Aeroporto - {{reference|stringformat:'0.6d'}}</title>
+		<style type="text/css">
+            .center-cropped {
+                width: 900px;
+                height: auto;
+            }
+            .logo{
+                height: 2.8cm;
+                border: 2px solid black;
+            }
+			.table-transfers td{
+				border: solid 1px #000000;
+				padding-top: 2px;
+				padding-bottom: -1px;
+				padding-left: 1px;
+				padding-right: 1px;
+				font-size: 10pt;
+			}
+			table.table-transfers {
+				margin-bottom: 5px;
+			}
+            p{
+				padding: 1px;
+                margin: 1px
+			}
+
+			@page {
+				size: letter portrait;
+				@frame content_frame { /* Content Frame */
+					margin-right: 0.8cm;
+					margin-left: 0.8cm;
+					margin-top: 0.4cm;
+					margin-bottom: 0.4cm;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div>
+			<table>
+				<tr class="row">
+					<td width="100%" style="text-align: center;">
+						{% if first_hotel is not None %}
+							<img class="logo" width="100%" src="{{environment}}://{{host}}/media/{{first_hotel.logo}}">
+						{% else %}
+							<img class="logo" width="100%" src="https://picsum.photos/id/135/318/180?grayscale&blur=10">
+						{% endif %}
+					</td>
+				</tr>
+			</table>
+			<div style="text-align: center; font-size: 13pt;"><b>Confirma&#231;&#227;o de Transporte no Aeroporto</b></div>
+			<table class="table-transfers">
+				<tbody>
+					<tr class="row">
+						<td width="30%">Numero de Confirma&#231;&#227;o:</td>
+						<td width="70%" style="text-align: center;">{{reference|stringformat:'0.6d'}}</td>
+					</tr>
+					<tr class="row">
+						<td width="30%">Passageiro:</td>
+						<td width="70%" style="text-align: center;">{{pax}}</td>
+					</tr>
+					<tr class="row">
+						<td width="30%">Hotel:</td>
+						<td width="70%" style="text-align: center;">{{first_hotel.name}}</td>
+					</tr>
+				</tbody>
+			</table>
+			<div style="text-align: center; font-size: 13pt;"><b>Informa&#231;&#227;o do Voo</b></div>
+			{% if reservation_services_arrivals|length > 0 %}
+			<table class="table-transfers">
+				<tbody>
+					<tr class="row">
+						<td width="15%" style="text-align: center;">Data Chegada</td>
+						<td width="8%" style="text-align: center;">Pax</td>
+						<td width="12%" style="text-align: center;">Aero linha</td>
+						<td width="12%" style="text-align: center;">No. Voo</td>
+						<td width="10%" style="text-align: center;">Hora</td>
+						<td style="text-align: center;">Coment&#225;rios</td>
+					</tr>
+					{% for reservation_services_arrival in reservation_services_arrivals %}
+					<tr class="row">
+						<td style="text-align: center;"> 
+                            {% with reservation_services_arrival.operation_date|date:"M d Y" as fecha_formateada %}
+                            {{ fecha_formateada|get_month_lang_po:"" }}
+                            {% endwith %}
+                        </td>
+						<td style="text-align: center;">{{reservation_services_arrival.pax_total}}</td>
+						<td style="text-align: center;">
+							{% if reservation_services_arrival.flight_code|length > 2 %}
+								{{reservation_services_arrival.flight_code|slice:"0:2"}}
+							{% else %}
+								TB
+							{% endif %}
+						</td>
+						<td style="text-align: center;">
+							{% if reservation_services_arrival.flight_code|length > 2 %}
+								{{reservation_services_arrival.flight_code|slice:"2:"}}
+							{% else %}
+								A
+							{% endif %}
+						</td>
+						<td style="text-align: center;">
+							{% if reservation_services_arrival.flight_time is not None %}
+								{{reservation_services_arrival.flight_time}}
+							{% else %}
+								__:__
+							{% endif %}
+						</td>
+						{% if forloop.first or reservation_services_arrivals|length == 1 %}
+						<td rowspan="{{reservation_services_arrivals|length}}" style="text-align: center;">
+							{% for comment in comments %}
+							<p>{{ comment|get_comment_lang_po }}</p>
+							{% endfor %}
+						</td>
+						{% endif %}
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			{% endif %}
+			{% if reservation_services_departures|length > 0 %}
+			<table class="table-transfers">
+				<tbody>
+					<tr class="row">
+						<td width="15%" style="text-align: center;">Data Sa&#237;da</td>
+						<td width="8%" style="text-align: center;">Pax</td>
+						<td width="12%" style="text-align: center;">Aero linha</td>
+						<td width="12%" style="text-align: center;">No. Voo</td>
+						<td width="10%" style="text-align: center;">Hora</td>
+						<td width="10%" style="text-align: center;">Pick Up</td>
+						<td style="text-align: center;">Coment&#225;rios</td>
+					</tr>
+					{% for reservation_services_departure in reservation_services_departures %}
+					<tr class="row">
+						<td style="text-align: center;">
+                            {% with reservation_services_departure.operation_date|date:"M d Y" as fecha_formateada %}
+                            {{ fecha_formateada|get_month_lang_po:"" }}
+                            {% endwith %}
+                        </td>
+						<td style="text-align: center;">{{reservation_services_departure.pax_total}}</td>
+						<td style="text-align: center;">
+							{% if reservation_services_departure.flight_code|length > 2 %}
+								{{reservation_services_departure.flight_code|slice:"0:2"}}
+							{% else %}
+								TB
+							{% endif %}
+						</td>
+						<td style="text-align: center;">
+							{% if reservation_services_departure.flight_code|length > 2 %}
+								{{reservation_services_departure.flight_code|slice:"2:"}}
+							{% else %}
+								A
+							{% endif %}
+						</td>
+						<td style="text-align: center;">
+							{% if reservation_services_departure.flight_time is not None %}
+								{{reservation_services_departure.flight_time}}
+							{% else %}
+								__:__
+							{% endif %}
+						</td>
+						<td style="text-align: center;">
+							{{reservation_services_departure.pup}}
+						</td>
+						{% if forloop.first and reservation_services_arrivals|length == 0 %}
+						<td rowspan="{{reservation_services_departures|length}}" style="text-align: center;">
+							{% for comment in comments %}
+							<p>{{ comment|get_comment_lang_po }}</p>
+							{% endfor %}
+						</td>
+						{% elif reservation_services_arrivals|length != 0 %}
+						<td> </td>
+						{% endif %}
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			{% endif %}
+			{% if reservation_services_interhotels|length > 0 %}
+			<table class="table-transfers">
+				<tbody>
+					<tr class="row">
+						<td width="12.5%" style="text-align: center;">Data</td>
+						<td width="8%" style="text-align: center;">Pax</td>
+						<td style="text-align: center;">Hotel Sa&#237;da</td>
+						<td width="8%" style="text-align: center;">Sala</td>
+						<td style="text-align: center;">Hotel Chegada</td>
+						<td width="10%" style="text-align: center;">Pick Up</td>
+						<td style="text-align: center;">Comentarios</td>
+					</tr>
+					{% for reservation_services_interhotel in reservation_services_interhotels %}
+					<tr class="row">
+						<td style="text-align: center;">
+                            {% with reservation_services_interhotel.date|date:"M d Y" as fecha_formateada %}
+                            {{ fecha_formateada|get_month_lang_po:"" }}
+                            {% endwith %}
+                        </td>
+						<td style="text-align: center;">{{reservation_services_interhotel.pax_total}}</td>
+						<td style="text-align: center;">
+							{{reservation_services_interhotel.origin.name}}
+						</td>
+						<td style="text-align: center;">
+							{{reservation_services_interhotel.room|default_if_none:""}}
+						</td>
+						<td style="text-align: center;">
+							{{reservation_services_interhotel.destination.name}}
+						</td>
+						<td style="text-align: center;">
+							{{reservation_services_interhotel.pup|default_if_none:"__:__"}}
+						</td>
+						{% if forloop.first and reservation_services_arrivals|length == 0 and reservation_services_departures|length == 0 %}
+						<td rowspan="{{reservation_services_interhotels|length}}" style="text-align: center;">
+							{% for comment in comments %}
+							<p>{{comment|get_comment_lang_po}}</p>
+							{% endfor %}
+						</td>
+						{% endif %}
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			{% endif %}
+		</div>
+		{% if first_hotel is not None %}
+			{% for hotel_image in hotel_images %}
+				<div style="text-align: center;">
+					<img class="center-cropped" src="{{environment}}://{{host}}/media/{{hotel_image}}">
+				</div>
+			{% endfor %}
+		{% endif %}
+	</body>
+</html>

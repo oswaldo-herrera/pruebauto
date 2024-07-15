@@ -1,0 +1,57 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" href="{% static "/favicon.ico" %}" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link
+			rel="stylesheet"
+			href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+			integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+			crossorigin="anonymous"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,700;1,400&family=Overpass:wght@200;700&display=swap"
+			rel="stylesheet"
+		/>
+		<link
+			href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined"
+			rel="stylesheet"
+		/>
+		<link rel="stylesheet" href="{% static "css/login.css" %}">
+
+		<title>Autenticación de Dos Factores (2FA)</title>
+	</head>
+	<body>
+		<a class="logout" href="/logout/">Cerrar Sesión</a>
+		<div class="box">
+			<div class="box__login">
+				<div class="box__login__title">Autenticación de Dos Factores (2FA)</div>
+				<div class="box__login__subtitle">Se ha enviado tu codigo por correo, ingresalo para acceder al sistema</div>
+				{% if error_message %}
+				<div class="alert alert-danger">{{error_message}}</div>
+				{% endif %}
+				<form method="POST" action="{% url 'authenticate_2fa' %}">
+					{% csrf_token %}
+					<div class="input-group mb-3">
+						<div class="input-group-prepend">
+							<span class="input-group-text">
+								<span class="material-icons-outlined"> lock </span>
+							</span>
+						</div>
+						<input
+							type="text"
+                            id="2fa_code"
+							name="2fa_code"
+							class="form-control"
+							required
+						/>
+					</div>
+					<button class="btn btn-primary box__login__btn" type="submit">Autenticar</button>
+				</form>
+				<a href="/auth/2fa/send_email/">Reenviar codigo</a>
+			</div>
+		</div>
+	</body>
+</html>

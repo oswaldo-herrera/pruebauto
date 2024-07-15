@@ -1,0 +1,77 @@
+html,
+body {
+	height: 100%;
+	position: relative;
+	min-height: 100%;
+}
+body {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+body .logout{
+	position: absolute;
+	top: 10px;
+	right: 10px;
+}
+.box {
+	width: 500px;
+	margin: auto;
+}
+.box__logo,
+.box__login {
+	flex-shrink: 1;
+	flex-grow: 0;
+	flex-basis: 50%;
+}
+.box__logo {
+	background-color: rgba(156, 24, 47, 0.5);
+	border-top-right-radius: 50px;
+	border-bottom-right-radius: 50px;
+	border: 1px solid rgba(255, 255, 255, 0.5);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0 100px;
+}
+.box__logo img {
+	width: 100%;
+}
+.box__login {
+	padding: 100px 70px 100px 80px;
+	background: #ffffff;
+}
+.box__login__title {
+	font-size: 32px;
+	margin-bottom: 20px;
+}
+.box__login__subtitle {
+	font-size: 24px;
+}
+.box__login__btn {
+	width: 100%;
+}
+
+/**
+*** bootstrap overrides
+**/
+
+
+.input-group-text,
+.input-group .form-control {
+	border-radius: 0px;
+	border-color: #dcdcdc;
+}
+.input-group-text {
+	background-color: #f7f7f7;
+	color: #95989a;
+	padding-right: 8px;
+	padding-left: 8px;
+}
+.form-control::placeholder {
+	color: #95989a;
+}
+.form-control,
+.form-control:focus {
+	color: #707070;
+}

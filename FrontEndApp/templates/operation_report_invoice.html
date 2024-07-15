@@ -1,0 +1,175 @@
+{% load static %}
+{% load FrontEndApp_tags %}
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>REPORTE DE FACTURAS DE PROVEEDOR - {{provider.name}}</title>
+		<style type="text/css">
+            .center-cropped {
+                width: 900px;
+                height: auto;
+            }
+            .logo{
+                height: 3cm;
+                border: 2px solid black;
+            }
+            .input-center {
+				font-family: Roboto;
+				color: black;
+				text-align: center;
+                padding: 0px;
+                margin: 0px
+			}
+            .no-break{
+                display: inline;
+            }
+			.table-transfers td{
+				border: solid 1px #000000;
+				padding-top: 2px;
+				padding-bottom: 2px;
+				padding-left: 1px;
+				padding-right: 1px;
+				font-size: 12pt;
+			}
+			p{
+				padding: 0px;
+                margin: 0px
+			}
+            .page{
+                text-align: right;
+                font-size:12px;
+            }
+
+            .header_table th{
+                border-top: solid 1px #000000;
+                border-bottom: solid 1px #000000;
+                padding-top: 2px;
+                padding-bottom:-1px;
+                font-size:12.5px;
+            }
+
+            .content_table td{
+                font-size:11px;
+                padding-top: 1px;
+                padding-bottom: -1px;
+                padding-left: 1px;
+                padding-right: 1px;
+                margin: 0px;
+                border: solid 1px #000000;
+            }
+
+            .content_table{
+                padding: 0px;
+                margin: 0px
+            }
+
+            .row{
+                padding-top:1px;
+                padding-bottom:1px;
+                
+            }
+
+            .operation_date{
+                border-top: solid 1px #000000;
+                padding-top:1px;
+            }
+
+            table td, table td * {
+                vertical-align: top;
+            }
+
+			{% comment %} @font-face {
+				font-family: Roboto;
+				src: url(http://{{host}}{% static "/font/Roboto-Regular.ttf" %});
+			}
+			/* Bold */
+			@font-face {
+				font-family: Roboto;
+				src: url(http://{{host}}{% static "/font/Roboto-Bold.ttf" %});
+				font-weight: bold;
+			}
+			/* Italic */
+			@font-face {
+				font-family: Roboto;
+				src: url(http://{{host}}{% static "/font/Roboto-Italic.ttf" %});
+				font-style: italic;
+			}
+			/* Bold and italic */
+			@font-face {
+				font-family: Roboto;
+				src: url(http://{{host}}{% static "/font/Roboto-BoldItalic.ttf" %});
+				font-weight: bold;
+				font-style: italic;
+			}
+
+			@font-face {
+				font-family: Zen Antique;
+				src: url(http://{{host}}{% static "/font/ZenAntique-Regular.ttf" %});
+			} {% endcomment %}
+
+			@page {
+				size: letter landscape;
+				@frame header { /* Static Frame */
+                    -pdf-frame-content: header_content;
+                    top: 1cm;
+                    margin-right: 0.5cm;
+                    margin-left: 0.5cm;
+                 }
+                 @frame content_frame { /* Content Frame */
+                    margin-right: 0.5cm;
+                    margin-left: 0.5cm;
+                    margin-top: 3.2cm;
+                    margin-bottom: 1cm;
+                 }
+			}
+		</style>
+	</head>
+	<body>
+		<div id="header_content">
+            <div>
+                <div class="page no-break"><pdf:pagenumber>/<pdf:pagecount>&nbsp;</div>
+                <h3 class="input-center">REPORTE DE FACTURAS DE PROVEEDOR - {{provider.name}}</h3>
+                <h4 class="input-center">{{start_date|date:"d/m/Y"}} - {{due_date|date:"d/m/Y"}}</h4>
+                <h4 class="input-center">{{user.username}} {{today|date:"d/m/Y H:i:s"}}</h4>
+            </div>
+            <table class="header_table">
+                <tr>
+                    <th width="9.5%">Fecha</th>
+                    <th width="11%">referencia#</th>
+                    <th width="8%">#Cupon</th>
+                    <th width="13%">#Boarding Pass</th>
+                    <th width="22.5%">Servicio</th>
+                    <th width="6%">Pax</th>
+                    <th width="7.5%">Costo USD</th>
+                    <th width="7.5%">Costo MN</th>
+                    <th width="7.5%">Efectivo</th>
+                    <th width="7.5%">No Show</th>
+                </tr>
+            </table>
+        </div>
+        {% for reservation_service in reservations_services %}
+            <table class="content_table">
+                <tr class="row">
+                    <td width="9.5%" style="text-align: center;">{{reservation_service.operation_date}}</td>
+                    <td width="11%" style="text-align: center;">{{reservation_service.reservation|stringformat:'0.6d'}}</td>
+                    <td width="8%" style="text-align: center;">{{reservation_service.coupon|default_if_none:""}}</td>
+                    <td width="13%" style="text-align: center;">{{reservation_service.id|stringformat:'0.8d'}}</td>
+                    <td width="22.4%" style="text-align: left;">{{reservation_service.transfer_type_data}}</td>
+                    <td width="6%" style="text-align: center;">{{reservation_service.pax_data}}</td>
+                    <td width="7.5%" style="text-align: right;">{{reservation_service.cost_usd|currency:""}} USD</td>
+                    <td width="7.5%" style="text-align: right;">{{reservation_service.cost_currency|currency:""}} {{provider.currency}}</td>
+                    <td width="7.5%" style="text-align: center;">
+                        {% if reservation_service.invoice_type == "cash" %}
+                            X
+                        {% endif %}
+                    </td>
+                    <td width="7.5%" style="text-align: center;">
+                        {% if reservation_service.invoice_type == "no_show" %}
+                            X
+                        {% endif %}
+                    </td>
+                </tr>
+            </table>
+        {% endfor %}
+	</body>
+</html>

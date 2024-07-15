@@ -1,0 +1,239 @@
+{% load static %}
+{% load FrontEndApp_tags %}
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>OPERACI&#211;N TOURS DE CASA - {{property.name|slice:"4:"}}</title>
+		<style type="text/css">
+            .center-cropped {
+                width: 900px;
+                height: auto;
+            }
+            .logo{
+                height: 3cm;
+                border: 2px solid black;
+            }
+            .input-left {
+				font-family: Roboto;
+				color: black;
+				text-align: left;
+                padding: 0px;
+                margin: 0px
+			}
+            .input-center {
+				font-family: Roboto;
+				color: black;
+				text-align: center;
+                padding: 0px;
+                margin: 0px
+			}
+            .no-break{
+                display: inline;
+            }
+			.table-transfers td{
+				border: solid 1px #000000;
+				padding-top: 2px;
+				padding-bottom: 2px;
+				padding-left: 1px;
+				padding-right: 1px;
+				font-size: 12pt;
+			}
+			p{
+				padding: 0px;
+                margin: 0px;
+                font-size:11.5px;
+			}
+            .page{
+                text-align: right;
+                font-size:12px;
+            }
+
+            .header_table th{
+                border: solid 1.5px #000000;
+                padding-top: 2px;
+                padding-bottom:-1px;
+                font-size:12px;
+            }
+
+            td{
+                font-size:11.5px;
+            }
+
+            .content_table td{
+                border: solid 1px #000000;
+                border-top: solid 0px #000000;
+                font-size: 9.5px;
+                padding: 1px;
+                margin: 0px
+            }
+
+            .content_table{
+                padding: 0px;
+                margin: 0px;
+                margin-top: 3px;
+            }
+
+            .row{
+                padding-top:1px;
+                padding-bottom:1px;
+            }
+
+			{% comment %} @font-face {
+				font-family: Roboto;
+				src: url(http://{{host}}{% static "/font/Roboto-Regular.ttf" %});
+			}
+			/* Bold */
+			@font-face {
+				font-family: Roboto;
+				src: url(http://{{host}}{% static "/font/Roboto-Bold.ttf" %});
+				font-weight: bold;
+			}
+			/* Italic */
+			@font-face {
+				font-family: Roboto;
+				src: url(http://{{host}}{% static "/font/Roboto-Italic.ttf" %});
+				font-style: italic;
+			}
+			/* Bold and italic */
+			@font-face {
+				font-family: Roboto;
+				src: url(http://{{host}}{% static "/font/Roboto-BoldItalic.ttf" %});
+				font-weight: bold;
+				font-style: italic;
+			}
+
+			@font-face {
+				font-family: Zen Antique;
+				src: url(http://{{host}}{% static "/font/ZenAntique-Regular.ttf" %});
+			} {% endcomment %}
+
+			@page {
+				size: letter portrait;
+				@frame header { /* Static Frame */
+                    -pdf-frame-content: header_content;
+                    top: 1cm;
+                    margin-right: 0.8cm;
+                    margin-left: 0.8cm;
+                 }
+                 @frame content_frame { /* Content Frame */
+                    margin-right: 0.8cm;
+                    margin-left: 0.8cm;
+                    margin-top: 3.6cm;
+                    margin-bottom: 1cm;
+                 }
+			}
+		</style>
+	</head>
+	<body>
+		<div id="header_content">
+            <table>
+                <tr valign="top">
+                    <td width="30%">
+                        <img class="logo" src="{{environment}}://{{host}}/static/logo_report.jpeg">
+                    </td>
+                    <td width="30%"></td>
+                    <td width="40%">
+                        <p class="input-left">Impreso el: {{today|date:"d/m/Y"}}</p>
+                        <p class="input-left">Hora: {{today|date:"h:i a"}}</p>
+                        <p class="input-left">Por: {{user.username}}</p>
+                    </td>
+                </tr>
+            </table> 
+        </div>
+        {% for unit_group in unit_groups %}
+        <table>
+            <tr valign="top"> 
+                <td width="30%">
+                    <h3 class="input-left">Operaci&#242;n Tours de Casa</h3>
+                </td>
+                <td width="30%"></td>
+                <td width="40%">
+                    <p class="input-left">Unidad <b>{{unit_group.unit}}</b></p>
+                </td>
+            </tr>
+        </table>
+        {% for availability_group in unit_group.availability_groups %}
+        <br>
+        <table>
+            <tr>
+                <td width="20%">
+                    Fecha: <b>{{date|date:"d/m/Y"}}</b>
+                </td>
+                <td width="30%">
+                    Excursion: <b>{{availability_group.availability_group.name|upper}}</b>
+                </td>
+                <td width="20%">
+                    Hora: <b>{{availability_group.time|date:"H:i"}}</b>
+                </td>
+                <td width="30%">
+                </td>
+            </tr>
+        </table>
+        <table class="header_table">
+            <tr valign="top">
+                <th width="23%">Hotel</th>
+                <th width="5%">#Hab</th>
+                <th width="7%">Cupon</th>
+                <th width="15%">Nombre Pax</th>
+                <th width="5%">Adu</th>
+                <th width="5%">Ni&#241;</th>
+                <th width="20%">Servicio</th>
+                <th width="15%">Tipo de venta</th>
+                <th width="5%">PUP</th>
+            </tr>
+        </table>
+        {% for sale in availability_group.sales %}
+        <table class="content_table">
+            <tr class="row">
+                <td width="23%">{{sale.hotel_name|upper}}</td>
+                <td width="5%">{{sale.room|default_if_none:""}}</td>
+                <td width="7%">{{sale.status}}{{sale.sale_key|stringformat:'0.8d'}}</td>
+                <td width="15%">{{sale.name_pax|upper}}</td>
+                <td width="5%">{{sale.adults|stringformat:"d"}}</td>
+                <td width="5%">{{sale.childs|stringformat:"d"}}</td>
+                <td width="20%">{{sale.service_name|upper}}</td>
+                <td width="15%">{{sale.sale_type_name|upper}}</td>
+                <td width="5%">
+                    {% if sale.pup is not None %}
+                    {{sale.pup.time}}
+                    {% else %}
+                    __:__
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+        {% if forloop.last %}
+        <table class="content_table">
+            <tr class="row">
+                <th width="50%"></th>
+                <td width="5%">{{availability_group.adults_total|stringformat:"d"}}</td>
+                <td width="5%">{{availability_group.childs_total|stringformat:"d"}}</td>
+                <td width="40%">
+                    {% if sale.all_comments != "" %}
+                    {{sale.all_comments}}
+                    {% else %}
+                    <br>
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+        {% else %}
+        <table class="content_table">
+            <tr class="row">
+                <th width="60%"></th>
+                <td width="40%">
+                    {% if sale.all_comments != "" %}
+                    {{sale.all_comments}}
+                    {% else %}
+                    <br>
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+        {% endif %}
+        {% endfor %}
+        {% endfor %}
+        <pdf:nextpage />
+        {% endfor %}
+	</body>
+</html>

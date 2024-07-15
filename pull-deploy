@@ -1,0 +1,36 @@
+#!/bin/bash
+# Sirve para hacer git pull y collectstatic jiji
+#
+# Saludos :3
+
+git pull
+
+if [ -z $VIRTUAL_ENV ]
+then
+	cd ..
+	source sistema-de-operaciones-y-vp-venv/bin/activate
+	cd sistema-de-operaciones-y-vp
+	printf "\nSe activó el Venv para su conveniencia :)\n"
+fi
+
+printf "\nCompilar React-JS (hubo cambios en los .js)? (y/n): "
+read build_js
+
+if [ "$build_js" == "y" ]
+then
+	cd app
+	yarn build
+	cd ..
+fi
+
+echo yes | python manage.py collectstatic
+
+printf "\nReiniciar servidor apache (hubo cambios en los .py)? (y/n): "
+read restart
+
+if [ "$restart" == "y" ]
+then
+	sudo service apache2 restart
+fi
+
+printf '\n¡Listo!\n'

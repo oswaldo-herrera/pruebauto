@@ -1,0 +1,24 @@
+.fallback-spinner {
+  position: relative;
+  display: flex;
+  height: 100vh;
+  width: 100%;
+}
+.loading {
+  position: absolute;
+  left: calc(50% - 35px);
+  top: 50%;
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  border: 3px solid transparent;
+}
+table.table-sm tbody td {
+  font-size: 12px !important;
+}
+
+table.table-sm thead th {
+  font-size: 15px !important;
+}

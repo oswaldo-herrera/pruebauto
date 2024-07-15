@@ -1,0 +1,112 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+	<style>
+		table
+		{
+			width: 100%;
+			min-width: 640px;
+			max-width: 1000px;
+			border-spacing: unset;
+			font-family: "Calibri",sans-serif;
+			border-top: 10px solid #1e2a35;
+			border-bottom: 10px solid #1e2a35;
+			margin: 0 auto;
+		}
+		th
+		{
+			padding-bottom: 7px;
+			padding-top: 27px;
+			text-align: center;
+			background-color: #1e2a35;
+		}
+
+		.centered { text-align: center; }
+		.logo { padding: 50px 0; }
+
+		td { padding: 0 80px; }
+
+		h1,h2,h3,h4
+		{
+			font-weight: 200;
+			padding-bottom: 30px;
+		}
+
+		p {
+			font-size: 1.33em;
+			font-weight: 50;
+			padding-bottom: 15px;
+		}
+
+		.code_2fa{
+			font-size: 2.66em;
+			font-weight: 100;
+		}
+
+		a.button
+		{
+			display: block;
+			width: 100%;
+			height: 50px;
+			color: white;
+			text-align: center;
+			line-height: 50px;
+			font-size: 1.5rem;
+			font-weight: 100;
+			text-decoration: none;
+			background-color: #093252;
+		}
+
+		tfoot td
+		{
+			text-align: center;
+			font-size: 1em;
+			font-weight: 100;
+			padding-bottom: 40px;
+		}
+
+		tfoot td ul
+		{
+			padding: 0;
+			list-style: none;
+		}
+	</style>
+</head>
+<body>
+	<table width="100%">
+		<thead>
+			<tr>
+				<th colspan="2">
+					<img src="{{environment}}://{{host}}/static/logo_report.jpeg" height=65 />
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td colspan="2">
+					<h1>Estimado/a {{store_card.name_pax}},</h1>
+					<p>Esperamos que este mensaje le encuentre bien. Nos complace informarle que hemos recibido con éxito los detalles de su monedero de saldo para su cuenta en {{store_card.store.name}}. Agradecemos su confianza en nosotros y estamos aquí para asistirle en todo lo que necesite.</p>
+					<p>A continuación, le proporcionamos un resumen de la información recibida:</p>
+					<p><b>Número de Monedero:</b>{{store_card.card_key|stringformat:'0.8d'}}</p>
+					<p><b>Fecha de Vencimiento:</b>{{store_card.due_date|date:"m/y"}}</p>
+					<p><b>NIP (Número de Identificación Personal):</b>{{store_card.nip}}</p>
+					<p>Le recordamos la importancia de mantener esta información de manera confidencial y no compartirla con terceros. Si observa algún cargo no autorizado o tiene alguna pregunta sobre su saldo, no dude en ponerse en contacto con nuestro servicio de atención al cliente de inmediato.</p>
+				</td>
+			</tr>
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colspan="2">
+					<ul>
+						<li>¿Cualquier duda? Puedes escribirnos a info@vacation-planners.com</li>
+						<li>000-000-0000</li>
+						<li>xxxxxxxxxxxxxxxxxxxxxxxxx</li>
+						<li>xxxxxxxxxxxxxxxxxxxxxxxxx</li>
+					</ul>
+				</td>
+			</tr>
+		</tfoot>
+	</table>
+</body>
+</html>

@@ -1,0 +1,22 @@
+#!/bin/bash
+# Sirve para hacer git pull y collectstatic jiji
+#
+# Saludos :3
+
+if [ -z $VIRTUAL_ENV ]
+then
+	cd ..
+	source sistema-de-operaciones-y-vp-venv/bin/activate
+	cd sistema-de-operaciones-y-vp
+	printf "\nSe activó el Venv para su conveniencia :)\n"
+fi
+
+for app in *App
+do
+	rm -r $app/migrations 2> /dev/null
+done
+
+python manage.py makemigrations *App
+python manage.py migrate --fake
+
+printf '\n¡Listo!\n'

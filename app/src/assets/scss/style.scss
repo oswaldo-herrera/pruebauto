@@ -1,0 +1,80 @@
+@import "variables";
+
+@import "~bootstrap/scss/bootstrap";
+@import "./layout/sidebar";
+@import "./layout/container";
+
+.btn-xs, .btn-group-xs > .btn {
+    --bs-btn-padding-y: 0.2rem;
+    --bs-btn-padding-x: 0.3rem;
+    --bs-btn-font-size: 0.700rem;
+    --bs-btn-border-radius: 0.2rem;
+}
+
+.table-scroll {
+	position:relative;
+	max-width: 1100px;
+	margin:auto;
+	overflow:hidden;
+}
+.table-wrap {
+	width:100%;
+	overflow:auto;
+}
+.table-scroll table {
+	width:100%;
+	margin:auto;
+}
+.table-scroll th, .table-scroll td {
+	white-space:nowrap;
+	vertical-align:top;
+}
+
+table.table-xs tbody td {
+	font-size: 10px !important;
+	padding: 0.3rem 0.3rem
+}
+
+table.table-xs thead th {
+	font-size: 12px !important;
+	padding: 0.3rem 0.3rem
+}
+
+.max-lines {
+	white-space: normal;
+	max-width: 150px;
+}
+
+.center-cropped {
+    width: 240px;
+    height: 80px;
+    overflow: hidden;
+    position: relative;
+}
+.center-cropped img {
+    position: absolute;
+    left: -3000%;
+    right: -3000%;
+    top: -3000%;
+    bottom: -3000%;
+    margin: auto;
+    height: 200%;
+}
+.text-properties {
+	display: block;
+	width: 600px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	text-align: right;
+}
+.tooltip-property {
+	font-size: 10px !important;
+}
+
+.row-sm{
+	.row > * {
+	  padding-right: calc(var(--bs-gutter-x) * .3) !important;
+	  padding-left: calc(var(--bs-gutter-x) * .3) !important;
+	}
+  }

@@ -1,0 +1,217 @@
+{% load static %}
+{% load FrontEndApp_tags %}
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>ON TOUR BY RCD - {{property.name|slice:"4:"}}</title>
+		<style type="text/css">
+            .center-cropped {
+                width: 900px;
+                height: auto;
+            }
+            .logo{
+                height: 3cm;
+                border: 2px solid black;
+            }
+            .input-center {
+				font-family: Roboto;
+				color: black;
+				text-align: center;
+                padding: 0px;
+                margin: 0px
+			}
+            .no-break{
+                display: inline;
+            }
+			.table-transfers td{
+				border: solid 1px #000000;
+				padding-top: 2px;
+				padding-bottom: 2px;
+				padding-left: 1px;
+				padding-right: 1px;
+				font-size: 11pt;
+			}
+			p{
+				padding: 0px;
+                margin: 0px
+			}
+            .page{
+                text-align: right;
+                font-size:11px;
+            }
+
+            .header_table th{
+                border-top: solid 1px #000000;
+                border-bottom: solid 1px #000000;
+                padding-top: 2px;
+                padding-bottom:-1px;
+                font-size:12px;
+            }
+
+            .content_table td{
+                font-size:10px;
+                padding: 0px;
+                margin: 0px
+            }
+
+            .content_table{
+                padding: 0px;
+                margin: 0px
+            }
+
+            .row{
+                padding-top:1px;
+                padding-bottom:1px;
+            }
+
+            .operation_date{
+                border-top: solid 1px #000000;
+                padding-top:1px;
+            }
+
+			{% comment %} @font-face {
+				font-family: Roboto;
+				src: url(http://{{host}}{% static "/font/Roboto-Regular.ttf" %});
+			}
+			/* Bold */
+			@font-face {
+				font-family: Roboto;
+				src: url(http://{{host}}{% static "/font/Roboto-Bold.ttf" %});
+				font-weight: bold;
+			}
+			/* Italic */
+			@font-face {
+				font-family: Roboto;
+				src: url(http://{{host}}{% static "/font/Roboto-Italic.ttf" %});
+				font-style: italic;
+			}
+			/* Bold and italic */
+			@font-face {
+				font-family: Roboto;
+				src: url(http://{{host}}{% static "/font/Roboto-BoldItalic.ttf" %});
+				font-weight: bold;
+				font-style: italic;
+			}
+
+			@font-face {
+				font-family: Zen Antique;
+				src: url(http://{{host}}{% static "/font/ZenAntique-Regular.ttf" %});
+			} {% endcomment %}
+
+			@page {
+				size: letter landscape;
+				@frame header { /* Static Frame */
+                    -pdf-frame-content: header_content;
+                    top: 1cm;
+                    margin-right: 0.5cm;
+                    margin-left: 0.5cm;
+                 }
+                 @frame content_frame { /* Content Frame */
+                    margin-right: 0.5cm;
+                    margin-left: 0.5cm;
+                    margin-top: 4cm;
+                    margin-bottom: 1cm;
+                 }
+			}
+		</style>
+	</head>
+	<body>
+		<div id="header_content">
+            <div>
+                <div class="page no-break"><pdf:pagenumber>/<pdf:pagecount>&nbsp;</div>
+                <h3 class="input-center">ON TOUR BY RCD - {{property.name|slice:"4:"}} {{title|upper}}</h3>
+                <h4 class="input-center">{{start_date|date:"d/m/Y"}} - {{due_date|date:"d/m/Y"}}</h4>
+                <h4 class="input-center">{{user.username}} {{today|date:"d/m/Y H:i:s"}}</h4>
+            </div>
+            <table class="header_table">
+                <tr valign="top">
+                    <th width="8%">Fecha</th>
+                    <th width="9%">PASAJERO</th>
+                    <th width="6%">CveRes</th>
+                    <th width="2%">Ad</th>
+                    <th width="2%">Ni</th>
+                    <th width="6%">Vuelo</th>
+                    <th width="5%">Hora</th>
+                    <th width="7%">Tipo de venta</th>
+                    <th width="13%">Hotel</th>
+                    <th width="9%">CveOpera</th>
+                    <th width="7%">Habitaci&#243;n</th>
+                    <th width="9%">TipoOpera</th>
+                    <th width="9%">TipoServ</th>
+                    <th width="7%">Unidad</th>
+                </tr>
+            </table>
+        </div>
+        {% for reservation_services_group in reservation_services_groups %}
+            <table class="content_table">
+                {% for reservation_service in reservation_services_group.reservation_services %}
+                <tr class="row">
+                    <td width="8%" style="text-align: center;">{{reservation_service.operation_date|date:"d/m/Y"}}</td>
+                    <td width="9%">{{reservation_service.reservation.pax}}</td>
+                    <td width="6%" style="text-align: center;">{{reservation_service.reservation.id|stringformat:'0.6d'}}</td>
+                    <td width="2%" style="text-align: center;">{{reservation_service.adults|stringformat:"d"}}</td>
+                    <td width="2%" style="text-align: center;">{{reservation_service.childs|stringformat:"d"}}</td>
+                    <td width="6%">
+                        {% if reservation_service.flight_code|length > 0 %}
+                            {{reservation_service.flight_code}}
+                        {% else %}
+                            TBA
+                        {% endif %}
+                    </td>
+                    <td width="5%" style="text-align: center;">
+                        {% if reservation_service.real_flight_time is not None and reservation_service.real_flight_time is not "" %}
+								{{reservation_service.real_flight_time}}
+                        {% elif reservation_service.flight is not None %}
+                            {% get_flight reservation_service.flight reservation_service.flight_field %}
+                        {% else %}
+                            __:__
+                        {% endif %}
+                    </td>
+                    <td width="7%" style="text-align: center;"><b>{{reservation_service.reservation.sale_type.name}}<b></td>
+                    <td width="13%">
+                        {% if reservation_service.destination is not None %}
+							{{reservation_service.destination.name}}
+                        {% elif reservation_service.origin is not None %}
+                            {{reservation_service.origin.name}}
+                        {% endif %}
+                    </td>
+                    <td width="10%" style="text-align: center;">
+                        {{reservation_service.reservation.opera_code}}
+                    </td>
+                    <td width="7%">{{reservation_service.room|default_if_none:""}}</td>
+                    <td width="9%">{{reservation_service.operation_type.name}}</td>
+                    <td width="9%" style="text-align: center;">{{reservation_service.service.code}}</td>
+                    <td width="7%" style="text-align: center;">{{reservation_service.unit_name}}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            <table class="unit_table">
+                <tr>
+                    <th width="21%" class="operation_date" style="text-align: right;">
+                        TOTAL DIA {{reservation_services_group.date|date:"d/m/Y"}}
+                    </th>
+                    <th width="1%"></th>
+                    <th width="2%" class="operation_date"></th>
+                    <th width="2%" class="operation_date" style="text-align: center;">
+                        {{reservation_services_group.adults_total|stringformat:"d"}}
+                    </th>
+                    <th width="2%" class="operation_date" style="text-align: center;">
+                        {{reservation_services_group.childs_total|stringformat:"d"}}
+                    </th>
+                    <th width="2%" class="operation_date"></th>
+                    <th width="70%"></th>
+                </tr>
+            </table>
+        {% endfor %}
+        <table>
+            <tr>
+                <td width="98%" style="font-size:12px; border-bottom: solid 1px #000000; text-align:right;">
+                    TOTAL
+                </td>
+                <td width="2%" style="font-size:10px; padding-bottom:-12px; text-align:center;">
+                    {{pax_total|default_if_none:"0"}}
+                </td>
+            </tr>
+        </table>
+	</body>
+</html>

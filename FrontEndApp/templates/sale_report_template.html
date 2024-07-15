@@ -1,0 +1,401 @@
+{% load static %}
+{% load FrontEndApp_tags %}
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>DETALLES DE VENTAS Y COMISIONES</title>
+		<style type="text/css">
+            .center-cropped {
+                width: 900px;
+                height: auto;
+            }
+            .logo{
+                height: 5cm;
+                width: auto;
+            }
+			.border{
+				border: solid 1px #000000;
+			}
+			.border td{
+				padding: 1px;
+				vertical-align:center;
+			}
+            .header th{
+                border-bottom: solid 1px #000000;
+                text-align: left;
+            }
+			.table-transfers td{
+				border: solid 1px #000000;
+				padding-top: 2px;
+				padding-bottom: 2px;
+				padding-left: 1px;
+				padding-right: 1px;
+				font-size: 12pt;
+			}
+			p{
+				padding: 1px;
+                margin: 1px
+			}
+
+			.total-underline{
+				text-align: right; 
+				border-top: solid 1px #000000;
+				padding-top: 2px;
+			}
+
+			table{
+				margin-top:1px;
+				margin-bottom:1px; 
+			}
+
+			.barcode{
+				padding-left: 12px;
+				margin-bottom: 2px;
+			}
+
+			.center {
+				font-family: Roboto;
+				color: black;
+				text-align: center;
+			}
+
+			.right {
+				font-family: Roboto;
+				color: black;
+				text-align: right;
+			}
+
+			.left {
+				font-family: Roboto;
+				color: black;
+				text-align: left;
+			}
+
+			.text-header{
+				font-size: 8pt;
+				font-weight: bold;
+				margin-top: 5px;
+				margin-bottom: 5px;
+			}
+
+			.text-user{
+				font-size: 8pt;
+				margin-top: 5px;
+				margin-bottom: 5px;
+			}
+
+			{% comment %} @font-face {
+				font-family: Roboto;
+				src: url(http://{{host}}{% static "/font/Roboto-Regular.ttf" %});
+			}
+			/* Bold */
+			@font-face {
+				font-family: Roboto;
+				src: url(http://{{host}}{% static "/font/Roboto-Bold.ttf" %});
+				font-weight: bold;
+			}
+			/* Italic */
+			@font-face {
+				font-family: Roboto;
+				src: url(http://{{host}}{% static "/font/Roboto-Italic.ttf" %});
+				font-style: italic;
+			}
+			/* Bold and italic */
+			@font-face {
+				font-family: Roboto;
+				src: url(http://{{host}}{% static "/font/Roboto-BoldItalic.ttf" %});
+				font-weight: bold;
+				font-style: italic;
+			}
+
+			@font-face {
+				font-family: Zen Antique;
+				src: url(http://{{host}}{% static "/font/ZenAntique-Regular.ttf" %});
+			} {% endcomment %}
+
+			@page {
+				size: a2 landscape;
+				@frame header { /* Static Frame */
+                    -pdf-frame-content: header_content;
+                    top: 0.5cm;
+                    margin-right: 1cm;
+                    margin-left: 1cm;
+                }
+				@frame content_frame { /* Content Frame */
+					margin-right: 1cm;
+					margin-left: 1cm;
+					margin-top: 3.5cm;
+					margin-bottom: 0.8cm;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div id="header_content">
+            <table>
+                <tr>
+                    <td width="10%">
+						<div class="center">
+							<h1>{{property.name}}</h1>
+						</div>
+                    </td>
+					<td width="2.5%"></td>
+                    <td width="20%">
+						<br>
+						<div class="center">
+							<h1>DETALLES DE VENTAS Y COMISIONES POR REP. {%if with_out_tax is True%} - SIN IVA {% endif %}</h1>
+							<h5>{{start_date|date:"d/m/Y"}} - {{due_date|date:"d/m/Y"}}</h5>
+						</div>
+                    </td>
+					<td width="2.5%"></td>
+                    <td width="10%">    
+						<table>
+							<tr>
+								<td>
+									<div class="left text-user">{{user.username}}</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="left text-user">{{date|date:"d/m/Y h:i a"}}</div>
+								</td>
+							</tr>
+						</table>
+                    </td>
+                    <td width="55%"></td>
+                </tr>
+            </table>
+            <table class="header">
+                <tr>
+					<td width="2%">
+                    </td>
+                    <th width="8%">
+                        REPRESENTANTE
+                    </th>
+                    <th width="5%">
+                        ACTIVIDAD
+                    </th>
+                    <th width="12.5%">
+                        GRUPO
+                    </th>
+                    <th width="4%">
+                        CUPON
+                    </th>
+                    <th width="13.5%">
+                        SERVICIO
+                    </th>
+					<th width="10%"></th>
+                    <th width="2.5%" style="text-align: center;">
+                        PAX
+                    </th>
+                    <th width="4%" style="text-align: center;">
+                        Fch Serv
+                    </th>
+                    <th width="5%" style="text-align: right;">
+                        IMPORTE
+                    </th>
+                    <th width="2%" style="text-align: center;">
+                        %
+                    </th>
+                    <th width="4%" style="text-align: right;">
+                        Descuento
+                    </th>
+                    <th width="5%" style="text-align: right;">
+                        TOTAL
+                    </th>
+                    <th width="5%" style="text-align: right;">
+                        VTA.DIRECTA
+                    </th>
+                    <th width="5%" style="text-align: right;">
+                        CR/CRC
+                    </th>
+                    <th width="5%" style="text-align: right;">
+                        NO COMIS
+                    </th>
+                    <th width="5%" style="text-align: right;">
+                        COMIS REP
+                    </th>
+                    <th width="2.5%" style="text-align: right;">
+                        HAB
+                    </th>
+                </tr>
+            </table>
+			<br>
+		</div>
+		{% for representative_group in representatives %}
+		{% for date_sale_group in representative_group.dates %}
+		<table>
+			<tr>
+				<td width="8%">
+					{{date_sale_group.date|date:"d/m/Y"}}
+				</td>
+				<td width="92%"></td>
+			</tr>
+		</table>
+		<table>
+			{% for sale_data in date_sale_group.sales %}
+			<tr>
+				<td width="2%"></td>
+				<td width="8%">
+					{{sale_data.sale.representative.code}} - {{sale_data.sale.representative.name}}
+				</td>
+				<td width="5%">
+					{% if sale_data.sale.service.activity is not None %}
+					{{sale_data.sale.service.activity.name}}
+					{% endif %}
+				</td>
+				<td width="12.5%">
+					{% if sale_data.sale.service.business_group is not None %}
+					{{sale_data.sale.service.business_group.name}}
+					{% endif %}
+				</td>
+				<td width="4%">
+					{% if sale_data.sale.status == "R" %}
+                    R
+                    {% endif %}
+					{{sale_data.sale.sale_key|stringformat:'0.8d'}}
+				</td>
+				<td width="13.5%">
+					{% if sale_data.sale.status == "C" %}
+					^^^ C A N C E L A D O ^^^
+					{% else %}
+					{{sale_data.sale.service.name}}
+					{% endif %}
+				</td>
+				<td width="10%"></td>
+				{% if sale_data.sale.status != "C" %}
+				<td width="2.5%" style="text-align: center;">
+					{{sale_data.sale.adults|floatformat:-2}}.{{sale_data.sale.childs|floatformat:-2}}
+				</td>
+				<td width="4%" style="text-align: center;">
+					{{sale_data.sale.service_date|date:"d/m/Y"}}
+				</td>
+				<td width="5%" style="text-align: right;">
+					{{sale_data.totals.subtotal_num|currency:""}}
+				</td>
+				<td width="2%" style="text-align: right;">
+					{% if sale_data.sale.discount_type == "percent" %}
+					{{sale_data.sale.discount}}%
+					{% endif %}
+				</td>
+				<td width="4%" style="text-align: right;">
+					{{sale_data.totals.discount_num|currency:"abs"}}
+				</td>
+				<td width="5%" style="text-align: right;">
+					{{sale_data.totals.total_num|currency:""}}
+				</td>
+				<td width="5%" style="text-align: right;">
+					{{sale_data.totals.direct_sale|currency:""}}
+				</td>
+				<td width="5%" style="text-align: right;">
+					{{sale_data.totals.cr_crc|currency:""}}
+				</td>
+				<td width="5%" style="text-align: right;">
+					{{sale_data.totals.no_comis|currency:""}}
+				</td>
+				<td width="5%" style="text-align: right;">
+					{{sale_data.totals.rep_comission|currency:""}}
+				</td>
+				<td width="2.5%" style="text-align: center;">
+					{{sale_data.sale.room}}
+				</td>
+				{% else %}
+				<td width="2.5%">
+				</td>
+				<td width="4%">
+				</td>
+				<td width="5%">
+				</td>
+				<td width="2%">
+				</td>
+				<td width="4%">
+				</td>
+				<td width="5%">
+				</td>
+				<td width="5%">
+				</td>
+				<td width="5%">
+				</td>
+				<td width="5%">
+				</td>
+				<td width="5%">
+				</td>
+				<td width="2.5%">
+				</td>
+				{% endif %}
+			</tr>
+			{% endfor %}
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td style="text-align: right; padding-right: 2px;">{{date_sale_group.date|date:"d/m/Y"}}</td>
+				<td style="text-align: center; border-top: solid 1px #000000;">
+					{{date_sale_group.pax_total.adults_total|floatformat:-2}}.{{date_sale_group.pax_total.childs_total|floatformat:-2}}
+				</td>
+				<td></td>
+				<td class="total-underline">
+					{{date_sale_group.total_import|currency:""}}
+				</td>
+				<td></td>
+				<td class="total-underline">
+					{{date_sale_group.total_discount|currency:"abs"}}
+				</td>
+				<td class="total-underline">
+					{{date_sale_group.total|currency:""}}
+				</td>
+				<td class="total-underline">
+					{{date_sale_group.total_direct_sale|currency:""}}
+				</td>
+				<td class="total-underline">
+					{{date_sale_group.total_cr_crc|currency:""}}
+				</td>
+				<td class="total-underline">
+					{{date_sale_group.total_no_comis|currency:""}}
+				</td>
+				<td class="total-underline">
+					{{date_sale_group.total_comis_rep|currency:""}}
+				</td>
+				<td></td>
+			</tr>
+		</table>
+		{% endfor %}
+		<table>
+			<tr>
+				<td width="55%" style="text-align: right; padding-right: 2px;">{{representative_group.representative.code}} - {{representative_group.representative.name}}</td>
+				<td width="2.5%" style="text-align: center; border-top: solid 1px #000000;">
+					{{representative_group.pax_total.adults_total|floatformat:-2}}.{{representative_group.pax_total.childs_total|floatformat:-2}}
+				</td>
+				<td width="4%"></td>
+				<td width="5%" class="total-underline">
+					{{representative_group.total_import|currency:""}}
+				</td>
+				<td width="2%"></td>
+				<td width="4%" class="total-underline">
+					{{representative_group.total_discount|currency:"abs"}}
+				</td>
+				<td width="5%" class="total-underline">
+					{{representative_group.total|currency:""}}
+				</td>
+				<td width="5%" class="total-underline">
+					{{representative_group.total_direct_sale|currency:""}}
+				</td>
+				<td width="5%" class="total-underline">
+					{{representative_group.total_cr_crc|currency:""}}
+				</td>
+				<td width="5%" class="total-underline">
+					{{representative_group.total_no_comis|currency:""}}
+				</td>
+				<td width="5%" class="total-underline">
+					{{representative_group.total_comis_rep|currency:""}}
+				</td>
+				<td width="2.5%"></td>
+			</tr>
+		</table>
+		<pdf:nextpage />
+		{% endfor %}
+	</body>
+</html>

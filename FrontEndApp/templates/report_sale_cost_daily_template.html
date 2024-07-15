@@ -1,0 +1,474 @@
+{% load static %}
+{% load FrontEndApp_tags %}
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Detalle Venta y Costo Diario</title>
+		<style type="text/css">
+            .center-cropped {
+                width: 900px;
+                height: auto;
+            }
+            .logo{
+                height: 5cm;
+                width: auto;
+            }
+			.border{
+				border: solid 1px #000000;
+			}
+			.content td{
+				padding-top: 1px;
+                padding-bottom: -1px;
+                padding-left: 1px;
+                padding-right: 1px;
+				font-size: 6pt;
+			}
+            .header th{
+                font-size: 6.5pt;
+                border-bottom: solid 1px #000000;
+                border-collapse: separate;
+                padding-top: 3px;
+                padding-bottom: -1px;
+                vertical-align: bottom;
+            }
+            .text{
+                text-align: left;
+            }
+            .number{
+                text-align: center;
+            }
+			.table-transfers td{
+				border: solid 1px #000000;
+				padding-top: 2px;
+				padding-bottom: 2px;
+				padding-left: 1px;
+				padding-right: 1px;
+				font-size: 12pt;
+			}
+			p{
+				padding: 1px;
+                margin: 1px
+			}
+
+            .total-underline-pax{
+				text-align: center; 
+				border-top: solid 1px #000000;
+				padding-top: 2px;
+			}
+
+			.total-underline{
+				text-align: right; 
+				border-top: solid 1px #000000;
+				padding-top: 2px;
+			}
+
+			table{
+				margin-top:1px;
+				margin-bottom:1px; 
+			}
+
+			.center {
+				font-family: Roboto;
+				color: black;
+				text-align: center;
+			}
+
+			.right {
+				font-family: Roboto;
+				color: black;
+				text-align: right;
+			}
+
+			.left {
+				font-family: Roboto;
+				color: black;
+				text-align: left;
+			}
+
+			.text-header{
+				font-size: 9pt;
+				font-weight: bold;
+				margin-top: 5px;
+				margin-bottom: 5px;
+			}
+
+			.text-user{
+				font-size: 8pt;
+				margin-top: 5px;
+				margin-bottom: 5px;
+			}
+
+			{% comment %} @font-face {
+				font-family: Roboto;
+				src: url(http://{{host}}{% static "/font/Roboto-Regular.ttf" %});
+			}
+			/* Bold */
+			@font-face {
+				font-family: Roboto;
+				src: url(http://{{host}}{% static "/font/Roboto-Bold.ttf" %});
+				font-weight: bold;
+			}
+			/* Italic */
+			@font-face {
+				font-family: Roboto;
+				src: url(http://{{host}}{% static "/font/Roboto-Italic.ttf" %});
+				font-style: italic;
+			}
+			/* Bold and italic */
+			@font-face {
+				font-family: Roboto;
+				src: url(http://{{host}}{% static "/font/Roboto-BoldItalic.ttf" %});
+				font-weight: bold;
+				font-style: italic;
+			}
+
+			@font-face {
+				font-family: Zen Antique;
+				src: url(http://{{host}}{% static "/font/ZenAntique-Regular.ttf" %});
+			} {% endcomment %}
+
+			@page {
+				size: legal landscape;
+				@frame header { /* Static Frame */
+                    -pdf-frame-content: header_content;
+                    top: 0.5cm;
+                    margin-right: 0.5cm;
+                    margin-left: 0.5cm;
+                }
+				@frame content_frame { /* Content Frame */
+					margin-right: 0.5cm;
+					margin-left: 0.5cm;
+					margin-top: 1.5cm;
+					margin-bottom: 0.8cm;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div id="header_content">
+            <table>
+                <tr>
+                    <td width="20%"></td>
+                    <td width="12.5%">
+                        <table>
+							<tr>
+								<td>
+									<div class="center text-header">Detalle Venta y Costo Diario</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="center text-header">{{start_date|date:"d/m/Y"}} - {{due_date|date:"d/m/Y"}}</div>
+								</td>
+							</tr>
+						</table>
+                    </td>
+                    <td width="2.5%"></td>
+                    <td width="12.5%">    
+						<table>
+							<tr>
+								<td>
+									<div class="center text-user">{{user.username}}</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="center text-user">{{date|date:"d/m/Y h:i a"}}</div>
+								</td>
+							</tr>
+						</table>
+                    </td>
+                    <td width="12.5%">
+						<div class="center">
+							<h1>{{property.name}}</h1>
+						</div>
+                    </td>
+                    <td width="40%"></td>
+                </tr>
+            </table>
+		</div>
+        {% for sale_type in sale_types %}
+        <table>
+            <tr>
+                <td width="20%"></td>
+                <td width="12.5%">
+                    <h4 class="center text-header">{{sale_type.name}}</h4>
+                </td>
+                <td width="67.5%"></td>
+            </tr>
+        </table>
+        <table class="header">
+            <tr>
+                <th width="5%" class="text">
+                    CUPON
+                </th>
+                <th width="8%" class="text">
+                    Nombre Pax
+                </th>
+                <th width="4%" class="text">
+                    Clave
+                </th>
+                <th width="10%" class="text">
+                    Servicio
+                </th>
+                <th width="7%" class="text">
+                    Grupo
+                </th>
+                <th width="5%" class="text">
+                    Fch Venta
+                </th>
+                <th width="2.5%" class="number">
+                    Ad
+                </th>
+                <th width="2.5%" class="number">
+                    Men
+                </th>
+                <th width="8%" class="text">
+                    Nombre Rep
+                </th>
+                <th width="5%" class="number">
+                    Venta Neta
+                </th>
+                <th width="4%" class="number">
+                    sin IVA
+                </th>
+                <th width="5.5%" class="number">
+                    Descuento
+                </th>
+                <th width="3%" class="number">
+                    %
+                </th>
+                <th width="5.5%" class="number">
+                    Venta Bruta
+                </th>
+                <th width="5%" class="number">
+                    IVA Desct
+                </th>
+                <th width="4%" class="number">
+                    %cost ad
+                </th>
+                <th width="5%" class="number">
+                    %cost men
+                </th>
+                <th width="5%" class="number">
+                    Costo Ad
+                </th>
+                <th width="5%" class="number">
+                    Costo Men
+                </th>
+                <th width="6%" class="number">
+                    Costo total (con IVA)
+                </th>
+                <th width="6%" class="number">
+                    Costo total (sin IVA)
+                </th>
+                <th width="5%" class="number">
+                    Directos (sin IVA)
+                </th>
+                <th width="4%" class="number">
+                    RC (sin IVA)
+                </th>
+                <th width="5%" class="number">
+                    No Comis (sin IVA)
+                </th>
+            </tr>
+        </table>
+        {% for date_group in sale_type.dates %}
+        {% for sale_group in date_group.sales %}
+		<table class="content">
+			<tr>
+				<td width="5%">
+                    {% if sale_group.sale.status == "R" %}
+                    R
+                    {% endif %}
+					{{sale_group.sale.sale_key|stringformat:'0.8d'}}
+				</td>
+                <td width="8%">
+					{{sale_group.sale.name_pax|upper}}
+				</td>
+                <td width="4%">
+					{{sale_group.sale.service.id|stringformat:'0.4d'}}
+				</td>
+                <td width="10%">
+					{{sale_group.sale.service.name|upper}}
+				</td>
+                <td width="7%">
+					{{sale_group.sale.service.business_group.name|upper}}
+				</td>
+                <td width="5%">
+					{{sale_group.sale.sale_date|date:"d/m/y"}}
+				</td>
+                <td width="2.5%" class="right">
+					{{sale_group.sale.adults|floatformat:-2}}
+				</td>
+                <td width="2.5%" class="right">
+					{{sale_group.sale.childs|floatformat:-2}}
+				</td>
+                <td width="8%">
+					{{sale_group.sale.representative.name|upper}}
+				</td>
+                <td width="5%" class="right">
+					{{sale_group.subtotal_num|currency:""}}
+				</td>
+                <td width="4%" class="right">
+                    {{sale_group.subtotal_num_no_tax|currency:""}}
+                </td>
+                <td width="5.5%" class="right">
+                    {{sale_group.discount_num|currency:""}}
+                </td>
+                <td width="3%" class="right">
+                    {{sale_group.sale.discount|currency:""}}
+                </td>
+                <td width="5.5%" class="right">
+                    {{sale_group.total_num|currency:""}}
+                </td>
+                <td width="5%" class="right">
+                    {{sale_group.discount_num_no_tax|currency:""}}
+                </td>
+                <td width="4%" class="right">
+                    {{sale_group.adult_cost_percent|currency:""}}
+                </td>
+                <td width="5%" class="right">
+                    {{sale_group.child_cost_percent|currency:""}}
+                </td>
+                <td width="5%" class="right">
+                    {{sale_group.adult_fee_num|currency:""}}
+                </td>
+                <td width="5%" class="right">
+                    {{sale_group.child_fee_num|currency:""}}
+                </td>
+                <td width="6%" class="right">
+                    {{sale_group.total_cost_num|currency:""}}
+                </td>
+                <td width="6%" class="right">
+                    {{sale_group.total_cost_num_no_tax|currency:""}}
+                </td>
+                <td width="5%" class="right">
+                    {{sale_group.direct_sale_cost|currency:""}}
+                </td>
+                <td width="4%" class="right">
+                    {{sale_group.cr_crc_cost|currency:""}}
+                </td>
+                <td width="5%" class="right">
+                    {{sale_group.no_comis_cost|currency:""}}
+                </td>
+			</tr>	
+		</table>
+        {% endfor %}
+        <table class="content">
+			<tr>
+				<td width="39%">
+				</td>
+                <td width="2.5%" class="total-underline">
+					{{date_group.adults|floatformat:-2}}
+				</td>
+                <td width="2.5%" class="total-underline">
+					{{date_group.childs|floatformat:-2}}
+				</td>
+                <td width="8%">
+				</td>
+                <td width="5%" class="total-underline">
+					{{date_group.subtotal_num|currency:""}}
+				</td>
+                <td width="4%" class="total-underline">
+                    {{date_group.subtotal_num_no_tax|currency:""}}
+                </td>
+                <td width="5.5%" class="total-underline">
+                    {{date_group.discount_num|currency:""}}
+                </td>
+                <td width="3%">
+                </td>
+                <td width="5.5%" class="total-underline">
+                    {{date_group.total_num|currency:""}}
+                </td>
+                <td width="5%" class="total-underline">
+                    {{date_group.discount_num_no_tax|currency:""}}
+                </td>
+                <td width="4%">
+                </td>
+                <td width="5%">
+                </td>
+                <td width="5%" class="total-underline">
+                    {{date_group.adult_fee_num|currency:""}}
+                </td>
+                <td width="5%" class="total-underline">
+                    {{date_group.child_fee_num|currency:""}}
+                </td>
+                <td width="6%" class="total-underline">
+                    {{date_group.total_cost_num|currency:""}}
+                </td>
+                <td width="6%" class="total-underline">
+                    {{date_group.total_cost_num_no_tax|currency:""}}
+                </td>
+                <td width="5%" class="total-underline">
+                    {{date_group.direct_sale|currency:""}}
+                </td>
+                <td width="4%" class="total-underline">
+                    {{date_group.cr_crc|currency:""}}
+                </td>
+                <td width="5%" class="total-underline">
+                    {{date_group.no_comis|currency:""}}
+                </td>
+			</tr>	
+		</table>
+        {% endfor %}
+        <table class="content">
+			<tr>
+				<td width="39%">
+				</td>
+                <td width="2.5%" class="total-underline">
+					{{sale_type.adults|floatformat:-2}}
+				</td>
+                <td width="2.5%" class="total-underline">
+					{{sale_type.childs|floatformat:-2}}
+				</td>
+                <td width="8%">
+				</td>
+                <td width="5%" class="total-underline">
+					{{sale_type.subtotal_num|currency:""}}
+				</td>
+                <td width="4%" class="total-underline">
+                    {{sale_type.subtotal_num_no_tax|currency:""}}
+                </td>
+                <td width="5.5%" class="total-underline">
+                    {{sale_type.discount_num|currency:""}}
+                </td>
+                <td width="3%">
+                </td>
+                <td width="5.5%" class="total-underline">
+                    {{sale_type.total_num|currency:""}}
+                </td>
+                <td width="5%" class="total-underline">
+                    {{sale_type.discount_num_no_tax|currency:""}}
+                </td>
+                <td width="4%">
+                </td>
+                <td width="5%">
+                </td>
+                <td width="5%" class="total-underline">
+                    {{sale_type.adult_fee_num|currency:""}}
+                </td>
+                <td width="5%" class="total-underline">
+                    {{sale_type.child_fee_num|currency:""}}
+                </td>
+                <td width="6%" class="total-underline">
+                    {{sale_type.total_cost_num|currency:""}}
+                </td>
+                <td width="6%" class="total-underline">
+                    {{sale_type.total_cost_num_no_tax|currency:""}}
+                </td>
+                <td width="5%" class="total-underline">
+                    {{sale_type.direct_sale|currency:""}}
+                </td>
+                <td width="4%" class="total-underline">
+                    {{sale_type.cr_crc|currency:""}}
+                </td>
+                <td width="5%" class="total-underline">
+                    {{sale_type.no_comis|currency:""}}
+                </td>
+			</tr>	
+		</table>
+        <pdf:nextpage>
+        {% endfor %}
+	</body>
+</html>

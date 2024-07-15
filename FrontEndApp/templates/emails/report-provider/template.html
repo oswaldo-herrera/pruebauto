@@ -1,0 +1,103 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+	<style>
+		table
+		{
+			width: 100%;
+			min-width: 640px;
+			max-width: 1000px;
+			border-spacing: unset;
+			font-family: "Calibri",sans-serif;
+			border-top: 10px solid rgba(137, 9, 37, 1);
+			border-bottom: 10px solid rgba(137, 9, 37, 1);
+			margin: 0 auto;
+		}
+		th
+		{
+			padding-bottom: 7px;
+			padding-top: 27px;
+			text-align: center;
+			background-color: rgba(156, 24, 47, 0.5);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		th img {
+			width: 100%;
+		}
+
+		.centered { text-align: center; }
+		.logo { padding: 50px 0; }
+
+		td { padding: 0 80px; }
+
+		h1,h2,h3,h4
+		{
+			font-weight: 200;
+			padding-bottom: 30px;
+		}
+
+		p {
+			font-size: 1.33em;
+			font-weight: 50;
+			padding-bottom: 15px;
+		}
+
+		a.button
+		{
+			display: block;
+			width: 100%;
+			height: 50px;
+			text-align: center;
+			line-height: 50px;
+			font-size: 1.5rem;
+			font-weight: 100;
+			text-decoration: none;
+			background-color: #093252;
+		}
+
+		tfoot td
+		{
+			text-align: center;
+			font-size: 1em;
+			font-weight: 100;
+			padding-bottom: 40px;
+		}
+
+		tfoot td ul
+		{
+			padding: 0;
+			list-style: none;
+		}
+	</style>
+</head>
+<body>
+	<table width="100%">
+		<tbody>
+      <tr>
+				<td colspan="2">
+					<h1>Hola {{provider.name}}</h1>
+					<p>Les enviamos el reporte de la operación del {{ date|date:"M d Y" }}</p>
+					<p>Adjuntamos el archivo a este correo.</p>
+				</td>
+			</tr>
+		</tbody>
+    <tfoot>
+			<tr>
+				<td colspan="2">
+					<ul>
+						<li>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quis ipsa tempore hic</li>
+						<li>Tel. (XXX) XXX XXXX</li>
+						<li>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quis ipsa tempore hic</li>
+						<li>Cancun, Quintana Roo, México.</li>
+					</ul>
+					www.sistema-operaciones-vp.com
+				</td>
+			</tr>
+		</tfoot>
+	</table>
+</body>
+</html>

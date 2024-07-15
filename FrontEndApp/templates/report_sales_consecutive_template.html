@@ -1,0 +1,246 @@
+{% load static %}
+{% load FrontEndApp_tags %}
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>CONSECUTIVO DE CUPONES</title>
+		<style type="text/css">
+            .center-cropped {
+                width: 900px;
+                height: auto;
+            }
+            .logo{
+                height: 5cm;
+                width: auto;
+            }
+			.border{
+				border: solid 1px #000000;
+			}
+			.border td{
+				padding: 1px;
+				vertical-align:center;
+			}
+            .content td{
+				padding: 1px;
+				font-size: 9pt;
+			}
+            .header th{
+                border-bottom: solid 1px #000000;
+                text-align: left;
+            }
+			.table-transfers td{
+				border: solid 1px #000000;
+				padding-top: 2px;
+				padding-bottom: 2px;
+				padding-left: 1px;
+				padding-right: 1px;
+				font-size: 12pt;
+			}
+			p{
+				padding: 1px;
+                margin: 1px
+			}
+
+			.total-underline{
+				text-align: right; 
+				border-top: solid 1px #000000;
+				padding-top: 2px;
+                font-size: 10pt;
+			}
+
+			table{
+				margin-top:1px;
+				margin-bottom:1px; 
+			}
+
+			.barcode{
+				padding-left: 12px;
+				margin-bottom: 2px;
+			}
+
+			.center {
+				font-family: Roboto;
+				color: black;
+				text-align: center;
+			}
+
+			.right {
+				font-family: Roboto;
+				color: black;
+				text-align: right;
+			}
+
+			.left {
+				font-family: Roboto;
+				color: black;
+				text-align: left;
+			}
+
+			.text-header{
+				font-size: 8pt;
+				font-weight: bold;
+				margin-top: 5px;
+				margin-bottom: 5px;
+			}
+
+			.text-user{
+				font-size: 8pt;
+				margin-top: 5px;
+				margin-bottom: 5px;
+			}
+
+			{% comment %} @font-face {
+				font-family: Roboto;
+				src: url(http://{{host}}{% static "/font/Roboto-Regular.ttf" %});
+			}
+			/* Bold */
+			@font-face {
+				font-family: Roboto;
+				src: url(http://{{host}}{% static "/font/Roboto-Bold.ttf" %});
+				font-weight: bold;
+			}
+			/* Italic */
+			@font-face {
+				font-family: Roboto;
+				src: url(http://{{host}}{% static "/font/Roboto-Italic.ttf" %});
+				font-style: italic;
+			}
+			/* Bold and italic */
+			@font-face {
+				font-family: Roboto;
+				src: url(http://{{host}}{% static "/font/Roboto-BoldItalic.ttf" %});
+				font-weight: bold;
+				font-style: italic;
+			}
+
+			@font-face {
+				font-family: Zen Antique;
+				src: url(http://{{host}}{% static "/font/ZenAntique-Regular.ttf" %});
+			} {% endcomment %}
+
+			@page {
+				size: letter portrait;
+				@frame header { /* Static Frame */
+                    -pdf-frame-content: header_content;
+                    top: 0.5cm;
+                    margin-right: 1cm;
+                    margin-left: 1cm;
+                }
+				@frame content_frame { /* Content Frame */
+					margin-right: 1cm;
+					margin-left: 1cm;
+					margin-top: 3.4cm;
+					margin-bottom: 1cm;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div id="header_content">
+            <table>
+                <tr>
+                    <td width="30%">
+						<div class="center">
+							<h1>VP CANCUN</h1>
+						</div>
+                    </td>
+					<td width="3%"></td>
+                    <td width="34%">
+						<br>
+						<div class="center">
+							<h1>CONSECUTIVO DE CUPONES</h1>
+							<h5>{{start_date|date:"d/m/Y"}} - {{due_date|date:"d/m/Y"}}</h5>
+						</div>
+                    </td>
+					<td width="3%"></td>
+                    <td width="30%">    
+						<table>
+							<tr>
+								<td>
+									<div class="center text-user">{{user.username}}</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="center text-user">{{date|date:"d/m/Y h:i a"}}</div>
+								</td>
+							</tr>
+						</table>
+                    </td>
+                </tr>
+            </table>
+            <table class="header">
+                <tr>
+					<td width="7.5%">
+                    </td>
+                    <th width="10%" style="text-align: left;">
+                        FECHA
+                    </th>
+                    <th width="10%" style="text-align: left;">
+                        CUPON
+                    </th>
+                    <th width="50%" style="text-align: left;">
+                        SERVICIO
+                    </th>
+                    <th width="5%" style="text-align: center;">
+                        PAX
+                    </th>
+                    <th width="10%" style="text-align: center;">
+                        IMPORTE
+                    </th>
+                    <td width="7.5%">
+                    </td>
+                </tr>
+            </table>
+			<br>
+		</div>
+		{% for sale_group in sales %}
+		<table class="content">
+			<tr>
+				<td width="7.5%"></td>
+				<td width="10%" style="text-align: center;">
+					{{sale_group.sale.sale_date|date:"d/m/Y"}}
+				</td>
+				<td width="10%">
+					{% if sale_group.sale.status == "R" %}
+                    R
+                    {% endif %}
+					{{sale_group.sale.sale_key|stringformat:'0.8d'}}
+				</td>
+				<td width="50%">
+					{% if sale_group.sale.status == "C" %}
+					^^^ C A N C E L A D O ^^^
+					{% else %}
+					{{sale_group.sale.service.name}}
+					{% endif %}
+				</td>
+				{% if sale_group.sale.status != "C" %}
+				<td width="5%" style="text-align: right;">
+					{{sale_group.sale.adults|floatformat:-2}}.{{sale_group.sale.childs|floatformat:-2}}
+				</td>
+				<td width="10%" style="text-align: right;">
+					{{sale_group.import|currency:""}}
+				</td>
+				{% else %}
+				<td width="5%"></td>
+				<td width="10%"></td>
+				{% endif %}
+                <td width="7.5%">
+                </td>
+			</tr>
+		</table>
+		{% endfor %}
+		<table>
+			<tr>
+				<td width="77.5%"></td>
+				<td width="5%" class="total-underline">
+					{{total_pax.adults_total|floatformat:-2}}.{{total_pax.childs_total|floatformat:-2}}
+				</td>
+				<td width="10%" class="total-underline">
+					{{total_import|currency:""}}
+				</td>
+				<td width="7.5%"></td>
+			</tr>
+		</table>
+	</body>
+</html>

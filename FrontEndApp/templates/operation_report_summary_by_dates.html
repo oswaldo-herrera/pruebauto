@@ -1,0 +1,223 @@
+{% load static %}
+{% load FrontEndApp_tags %}
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>ON TOUR BY RCD - {{property.name|slice:"4:"}}</title>
+		<style type="text/css">
+            .center-cropped {
+                width: 900px;
+                height: auto;
+            }
+            .logo{
+                height: 3cm;
+                border: 2px solid black;
+            }
+            .input-center {
+				font-family: Roboto;
+				color: black;
+				text-align: center;
+                padding: 0px;
+                margin: 0px
+			}
+            .no-break{
+                display: inline;
+            }
+			.table-transfers td{
+				border: solid 1px #000000;
+				padding-top: 2px;
+				padding-bottom: 2px;
+				padding-left: 1px;
+				padding-right: 1px;
+				font-size: 12pt;
+			}
+			p{
+				padding: 0px;
+                margin: 0px
+			}
+            .page{
+                text-align: right;
+                font-size:12px;
+            }
+            .total{
+                color: #008be8;
+                font-size:16px;
+                text-align: center;
+                padding-top: 2px;
+                padding-bottom:-1px;
+                vertical-align: top;
+            }
+
+            .header_table th{
+                border-bottom: solid 1px #000000;
+                padding-top: 2px;
+                padding-bottom:-1px;
+                font-size:12.5px;
+            }
+
+            .gray {
+                background-color: #c8c8c8;
+            }
+            
+            .foot{
+                border-top: solid 1px #000000;
+                padding-top: 2px;
+                padding-bottom:-1px;
+                padding-left:1px;
+                padding-right:1px;
+                font-size:12.5px;
+            }
+
+            .content_table td{
+                font-size:11px;
+                padding: 0px;
+                margin: 0px
+            }
+
+            .content_table{
+                padding: 0px;
+                margin: 0px
+            }
+
+            .row{
+                padding-top:1px;
+                padding-bottom:1px;
+                font-size:11px;
+            }
+
+            .operation_date{
+                border-top: solid 1px #000000;
+                padding-top:1px;
+            }
+
+			{% comment %} @font-face {
+				font-family: Roboto;
+				src: url(http://{{host}}{% static "/font/Roboto-Regular.ttf" %});
+			}
+			/* Bold */
+			@font-face {
+				font-family: Roboto;
+				src: url(http://{{host}}{% static "/font/Roboto-Bold.ttf" %});
+				font-weight: bold;
+			}
+			/* Italic */
+			@font-face {
+				font-family: Roboto;
+				src: url(http://{{host}}{% static "/font/Roboto-Italic.ttf" %});
+				font-style: italic;
+			}
+			/* Bold and italic */
+			@font-face {
+				font-family: Roboto;
+				src: url(http://{{host}}{% static "/font/Roboto-BoldItalic.ttf" %});
+				font-weight: bold;
+				font-style: italic;
+			}
+
+			@font-face {
+				font-family: Zen Antique;
+				src: url(http://{{host}}{% static "/font/ZenAntique-Regular.ttf" %});
+			} {% endcomment %}
+
+			@page {
+				size: letter landscape;
+				@frame header { /* Static Frame */
+                    -pdf-frame-content: header_content;
+                    top: 0.5cm;
+                    margin-right: 0.5cm;
+                    margin-left: 0.5cm;
+                 }
+                 @frame content_frame { /* Content Frame */
+                    margin-right: 0.5cm;
+                    margin-left: 0.5cm;
+                    margin-top: 2cm;
+                    margin-bottom: 1cm;
+                 }
+			}
+		</style>
+	</head>
+	<body>
+		<div id="header_content">
+            <div>
+                <div class="page no-break"><pdf:pagenumber>/<pdf:pagecount>&nbsp;</div>
+                <table>
+                    <tr>
+                        <td width="50%">
+                            <h2 class="input-center">ON TOUR BY RCD - {{property.name|slice:"4:"}}</h2>
+                        </td>
+                        <td width="50%">
+                            <h4 class="input-center">RESUMEN DE {{title|upper}} DEL {{start_date|date:"d/m/Y"}} AL {{due_date|date:"d/m/Y"}}</h4>
+                            <h4 class="input-center">Reporte impreso por: {{user.username}} el {{today|date:"d/m/Y - H:i:s"}}</h4>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <p>{{title_sale_types}}</p>
+        <p>{{title_hotels}}</p>
+        <table class="header_table table-striped">
+            <tr valign="top">
+                <th width="20%">
+                    {% if sort_by == "sales_type" %}
+                        TIPO DE VENTA
+                    {% else %}
+                        HOTEL
+                    {% endif %}
+                </th>
+                {% for total_date in total_by_dates %}
+                    <th width="5%">{{total_date.date|date:"d/m"}}</th>
+                {% endfor %}
+                <th width="auto"></th>
+            </tr>
+            {% for reservation_services_group in reservation_services_groups %}
+            <tr class="{{reservation_services_group.class_table}} row">
+                <td width="20%" >{{reservation_services_group.name}}</td>
+                {% for date in reservation_services_group.dates %}
+                <td width="5%" style="text-align: center;">{{date.adults_total|default_if_none:0|stringformat:"d"}}.{{date.childs_total|default_if_none:0|stringformat:"d"}}</td>
+                {% endfor %}
+                <td width="auto"></td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td class="foot" width="20%"></td>
+                {% for total_date in total_by_dates %}
+                <td class="foot" width="5%" style="text-align: center;">{{total_date.adults_total|default_if_none:0|stringformat:"d"}}.{{total_date.childs_total|default_if_none:0|stringformat:"d"}}</td>
+                {% endfor %}
+                <td class="foot" width="auto"></td>
+            </tr>
+        </table>
+        {% if print_total is True %}
+            <pdf:nextpage />
+        {% endif %}
+        <table>
+            <tr valign="top">
+                <td width="35%">
+                    <table class="header_table">
+                        <tr valign="top">
+                            <th>TOTAL DE PAX {{title|upper}} DEL {{start_date|date:"d/m/Y"}} AL {{due_date|date:"d/m/Y"}}</th>
+                        </tr>
+                    </table>
+                    <table>
+                        {% for reservation_services_group in reservation_services_groups %}
+                        <tr class="row">
+                            <td width="85%">{{reservation_services_group.name}}</td>
+                            <td width="15%" style="text-align: center;">{{reservation_services_group.adults_total|default_if_none:0|stringformat:"d"}}.{{reservation_services_group.childs_total|default_if_none:0|stringformat:"d"}}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </td>
+                <td width="65%" style>
+                    <div class="total">
+                        EL TOTAL DE PAX QUE 
+                    {% if type == "DEPARTURES" %}
+                    SALIERON
+                    {% elif type == "ARRIVALS"%}
+                    LLEGARON
+                    {% endif %}
+                    EN EL PERIODO COMPRENDIDO DEL {{start_date|date:"d/m/Y"}} AL {{due_date|date:"d/m/Y"}} DE {{adults_total|default_if_none:0|stringformat:"d"}}.{{childs_total|default_if_none:0|stringformat:"d"}}
+                    </div>
+                </td>
+            </tr>
+        </table>
+	</body>
+</html>

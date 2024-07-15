@@ -1,0 +1,397 @@
+{% load static %}
+{% load FrontEndApp_tags %}
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>CUP&#211;N DE SERVICIO - {{sale_key|stringformat:'0.8d'}}</title>
+		<style type="text/css">
+			body {
+				color: #212529;
+				font-size: 1rem;
+			}
+			th{
+				font-weight: bold;
+			}
+            .center-cropped {
+                width: 50px;
+                height: auto;
+            }
+            .logo{
+                height: 1.8cm;
+                width: auto;
+            }
+			.border{
+				padding-top: 5px;
+				border-top: solid 1px #dee2e6;
+				border-bottom: solid 2px #dee2e6;
+			}
+			.content td{
+				padding-top: 5px;
+				padding-bottom: 5px;
+			}
+			.table-transfers td{
+				border: solid 1px #000000;
+				padding-top: 2px;
+				padding-bottom: 2px;
+				padding-left: 1px;
+				padding-right: 1px;
+				font-size: 12pt;
+			}
+			p{
+				padding: 1px;
+                margin: 1px
+			}
+			h1{
+				line-height: 90%;
+			}
+
+			.no-space{
+				padding: 0px;
+                margin: 0px;
+				line-height: 1.1;
+			}
+
+			.barcode{
+				padding-right: -22px;
+				margin-bottom: 5px;
+				margin-top: 1px;
+			}
+
+			.data{
+				background-color: #f0f3f4;
+				padding-top: 4px;
+				padding-bottom: 4px;
+				padding-left: 2px;
+				padding-right: 2px;
+				margin-bottom: 5px;
+			}
+
+			.center {
+				font-family: Roboto;
+				color: black;
+				text-align: center;
+			}
+
+			.right {
+				font-family: Roboto;
+				color: black;
+				text-align: right;
+			}
+
+			.left {
+				font-family: Roboto;
+				color: black;
+				text-align: left;
+			}
+
+			.clauses-text{
+				text-align: justify;
+				font-size: 8.6pt;
+			}
+
+			.clauses-text-2{
+				text-align: justify;
+				font-size: 7.5pt;
+			}
+
+			.clauses-text-pc{
+				text-align: justify;
+				font-size: 6.5pt;
+			}
+
+			.clauses-text-2-pc{
+				text-align: justify;
+				font-size: 6pt;
+			}
+
+			.label-sign{
+				font-size: 8pt;
+				color: black;
+				text-align: center;
+				padding-top: 10px;
+				border-top: solid 1.5px #000000;
+			}
+
+			.top{
+				vertical-align:top;
+			}
+
+			.text-header{
+				font-size: 20px;
+    			font-weight: 600;
+				margin-top: 2.5px;
+				margin-bottom: 2.5px;
+			}
+
+			.text-price {
+				font-size: 12px;
+    			font-weight: 400;
+				margin-top: 2px;
+				margin-bottom: 2px;
+			}
+
+			.text-header-wh{
+				font-size: 28px;
+    			font-weight: 300;
+				color: #fff;
+				margin-top: 2px;
+				margin-bottom: 2px;
+			}
+
+			.text-price-wh {
+				color: #fff;
+				font-size: 12px;
+    			font-weight: 400;
+				margin-top: 2px;
+				margin-bottom: 2px;
+			}
+
+			.text-user{
+				font-size: 8.5pt;
+				margin-top: 2px;
+				margin-bottom: 2px;
+			}
+
+			.table-price{
+				padding-top: 2.5px;
+				padding-bottom: 0px;
+				margin-bottom: 0px;
+				padding-left: 2.5px;
+				padding-right: 2.5px;
+			}
+
+			.bg-gray{
+				background-color: #f0f3f4;
+			}
+
+			.bg-black{
+				background-color: #2d353c;
+			}
+
+			.price-note{
+				color: #505050;
+				font-size: 75%;
+			}
+
+			.bottom{
+				margin-left: 10px;
+				margin-right: 10px;
+			}
+
+			@page {
+				size: letter portrait;
+				@frame content_frame { /* Content Frame */
+					margin-right: 0.8cm;
+					margin-left: 0.8cm;
+					margin-top: 0.8cm;
+					margin-bottom: 0.8cm;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div>
+            {% for coupon in coupons %}
+			<table style="margin-bottom: 5px;">
+				<tr>
+					<td width="30%">
+						<img class="logo" src="{{environment}}://{{host}}/static/logo_1.png">
+						<!-- <img class="logo" src="https://www.rcdhotels.com/files/6840/RCD_HOTELS_LOGO_CONTORNO_2016.png"> -->
+					</td>
+					<td width="40%">
+						<div class="center no-space">
+							<h1>CUP&#211;N DE SERVICIO</h1>
+							<h1 class="no-space">{{coupon.title|linebreaks}}</h1>
+						</div>
+					</td>
+					<td width="30%">
+
+					</td>
+				</tr>
+			</table>
+			<table class="data">
+				<tr>
+					<td width="15%" class="left top">
+						<h1 class="no-space">Direccion:</h1>
+						<div class="no-space">{{coupon.coupon_title|linebreaks}}</div>
+					</td>
+					<td width="37%" class="left top">
+						<h1 class="no-space">Otros Datos:</h1>
+						<div class="text-user no-space">Nombre/Name: {{coupon.pax|upper}}
+							<br>Hotel: {{coupon.hotel|upper}}
+							<br>Adulto/Adult: {{coupon.adults|floatformat:-2}} Ni&#241;o/Child: {{coupon.childs|floatformat:-2}}
+							<br>N&#250;m. de Confirmaci&#243;n/Confirmation No: {{coupon.confirm_provider}}
+							<br>Proveedor: {{coupon.provider|upper}}
+							<br>Excursi&#243;n/Tour: {{coupon.service|upper}}
+						</div>
+					</td>
+					<td width="28%" class="left top">
+						<div class="no-space">{{coupon.coupon_header|linebreaks}}</div>
+					</td>
+					<td width="20%" class="right top">
+						<div class="barcode"><pdf:barcode value="{{coupon.ID|stringformat:'0.8d'}}" type="code39" align="middle" barheight="15" /></div>
+						<div class="text-user no-space">Folio Venta {{coupon.ID|stringformat:'0.8d'}}
+							<br>{{user.username}}
+							<br>{{coupon.sale_date|date:"F d, Y"}}
+							<br>{{coupon.sale_date|date:"H:i:s"}}
+							<br>Cuarto/Room: {{coupon.room}}
+						</div>
+					</td>
+				</tr>
+			</table>
+			<div class="bottom">
+				<table>
+					<tr>
+						<th width="1%">
+						</th>
+						<th class="border left" width="56%">
+							<b>D&#237;a/Day<b>
+						</th>
+						<th class="border center" width="21%">
+							<b>Hora/Time<b>
+						</th>
+						<th class="border center" width="21%">
+							<b>Salida/Departure<b>
+						</th>
+						<th width="1%">
+						</th>
+					</tr>
+					<tr class="content">
+						<td>
+						</td>
+						<td class="left text-user no-space">
+							{% with coupon.service_date|date:"d/M/y" as fecha_formateada %}
+								{{ fecha_formateada|get_month_lang_es:"" }} 
+							{% endwith %}
+							{% with coupon.service_date|date:"w" as fecha_formateada %}
+								({{ fecha_formateada|get_day_week_es:"" }}) 
+							{% endwith %}
+							{% with coupon.service_date|date:"w" as fecha_formateada %}
+								({{ fecha_formateada|get_day_week_en:"" }})
+							{% endwith %}
+							<br>Rep: {{coupon.rep}}
+						</td>
+						<td class="center">
+							{{coupon.service_time|time:"H:i:s"}}
+						</td>
+						<td class="center">
+							{{coupon.service_pup|time:"H:i:s"}}
+						</td>
+						<td>
+						</td>
+					</tr>
+				</table>
+				<table class="table-price">
+					<tr>
+						<td width="1%">
+						</td>
+						<td width="36%" class="bg-gray">
+							<div class="text-price">Cantidad a Pagar/Total Amount Due:</div>
+							<div class="text-header">{{coupon.subtotal}}</div>
+						</td>
+						<td width="36%" class="bg-gray">
+							<div class="text-price">Descuento/Discount:</div>
+							<div class="text-header">{{coupon.discount}}</div>
+						</td>
+						<td width="26%" class="bg-black">
+							<div class="left text-price-wh">Total a Pagar/Amount to Pay:</div>
+							<div class="right text-header-wh">{{coupon.total}}</div>
+						</td>
+						<td width="1%">
+						</td>
+					</tr>
+				</table>
+				<div class="left text-user price-note">
+					{% for sale_payment in coupon.sale_payments %}
+						* Forma de pago: {{sale_payment.payment_method}} {{sale_payment.amount}}<br>
+					{% endfor %}
+					* (SON: {{coupon.total_text}})
+					<br>{{coupon.service_comments|default_if_none:""}}
+					<br>{{coupon.comments_coupon|default_if_none:""}}
+					<br>
+					<br>
+					<br>
+				</div>
+			</div>
+			{% if coupon.property == "VP-PC" %}
+			<table>
+				<tr>
+					<td width="27.5%"></td>
+					<td width="45%">
+					   <p class="label-sign">I AGREE - YO ACEPTO</p>
+					</td>
+					<td width="27.5%"></td>
+				 </tr>
+			</table>
+			<br>
+			<table>
+				<tr>
+					<td width="47%" valign="top">
+						<p><b>GENERAL CANCELLATION POLICIES</b></p>
+						<br>
+						<p class="clauses-text-pc">All changes to your reservations must be made in person by the original purchaser at the Vacation Planner desk with the original reservation receipt in hand. Changes may only be made once, and reservations with changes may not be canceled nor refunded. A full refund will only be given for cancellations made 24 hours prior to the service. Guests who do not arrive at the scheduled time of the tour or service are not entitled to request a refund. 
+							<br>For Groups: Cancellations must be made seven (7) days prior to the group’s arrival. 
+							<br><br>Recognize and acknowledge that the provider of touristic services which operates the activity in reference, is the only supplier of the touristic services (the "Supplier", or the "Provider") , and that PARADISE TOURS DEL ESTE, S.R.L, INVERSIONES ZAHENA S.A., PALACE PREMIER DOMINICANA S.R.L, or any of its affiliated, subsidiary and/or patent companies and Hard Rock Limited, Hard Rock Cafe International, Inc., including, but not limited to any of their proprietors, operators, affiliates, subsidiaries, employees, collaborators and/or direct agents are not responsible for any accident, death, personal damage, loss/damage of material goods, schedule change, and/or any other irregular occurrence and unforeseen event during my excursion. I also acknowledge that every Supplier is an independent contractor. Likewise, I hereby agree to release PARADISE TOURS DEL ESTE, S.R.L, INVERSIONES ZAHENA S.A, PALACE PREMIER DOMINICANA S.R.L, its parent companies, subsidiaries, subsidiaries, parents and / or associates and their respective shareholders, partners, directors, representatives, dependents, agents and / or employees from any and all claims, lawsuits, administrative proceedings, fines, closures, expenses, costs of trial, civil, criminal, labor, administrative, fiscal, environmental and general liability of any complaint and nonconformity filed in the in the Dominican Republic or abroad, as well as any loss, accident, injury or death arising from any activities and / or Services provided by the Supplier. The act of purchasing a service becomes the full agreement of all the terms and conditions stated in this coupon.</p>
+					</td>
+					<td width="6%">
+
+					</td>
+					<td width="47%" valign="top">
+						<p><b>POL&#205;TICAS GENERALES DE CANCELACI&#211;N</b></p>
+						<br>
+						<p class="clauses-text-pc">Todo cambio a su reservaci&#243;n deber&#225; ser hecho por el comprador original en el escritorio de Vacation Planners, con el recibo de compra original en mano.
+							<br>Solo se permite un cambio por reservaci&#243;n y las reservaciones con cambios no pueden ser canceladas ni reembolsadas. Los reembolsos completos se aceptar&#225;n siempre que sean requeridos con 24 horas de anticipaci&#243;n de su servicio. Aquellos clientes que no lleguen a su cita de servicio o excursi&#243;n a tiempo no recibir&#225;n reembolso alguno.
+							<br>Para Grupos: Cancelaciones deber&#225;n ser con siete (7) d&#237;as de anticipaci&#243;n a la llegada del grupo.
+							<br><br>Reconozco que el proveedor de servicios tur&#237;sticos que opera la actividad en referencia, es el &#250;nico agente proveedor de servicios tur&#237;sticos (el "Proveedor"), por lo que PARADISE TOURS DEL ESTE, S.R.L., INVERSIONES ZAHENA S.A., PALACE PREMIER DOMINICANA S.R.L., o cualesquiera de sus entidades afiliadas, subsidiarias y/o entidades de patentes y el Hard Rock Limited, Hard Rock Cafe International, Inc. incluyendo, pero no limitado a cualquiera de sus propietarios, operadores, afiliadas, subsidiarias, empleados, colaboradores y/o agentes directos, no asumen responsabilidad alguna por accidentes, muerte, p&#233;rdidas y/o daños materiales o humanos, cambios de horario o alguna otra irregularidad originada durante mi excursi&#243;n, incluyendo situaciones provocadas por caso fortuito o fuerza mayor. Reconozco que el Proveedor es un contratista independiente. Igualmente, renuncio a la interposici&#243;n y acuerdo liberar a PARADISE TOURS DEL ESTE, S.R.L, INVERSIONES ZAHENA S.A. PALACE PREMIER DOMINICANA S.R.L, sus sociedades controladoras, subsidiarias, filiales, matrices y/o asociadas asi como a sus correspondientes accionistas, socios, directores, representantes, dependientes, agentes y/o empleados de cualesquier tipo de reclamaciones, demandas, juicios, procedimientos de car&#225;cter administrativo, multas, embargos, gastos, costas de juicio, responsabilidad civil, penal, laboral, administrativa, fiscal, ambiental y en general de cualquier queja e inconformidad que fuere presentada en la Rep&#250;blica Dominicana o en el extranjero, asi como cualquier siniestro, accidente, lesi&#243;n o muerte derivados de cualesquiera actividades y/o Servicios proporcionados por el Proveedor. El acto de suscripci&#243;n o compra implica la total conformidad de todas y cada una de las condiciones mencionadas en ambos lados de este cup&#243;n.</p>
+					</td>
+				</tr>
+			</table>
+			{% else %}
+			<table>
+				<tr>
+					<td width="45%">
+						<p>POL&#205;TICAS DE CANCELACI&#211;N GENERALES</p>
+						<br>
+						<p class="clauses-text">Todo cambio a su reservaci&#243;n deber&#225; ser hecho por el comprador original en el escritorio de Vacation Planners, con el recibo de compra original en mano. Solo se permite un cambio por reservaci&#243;n, y las reservaciones con cambios no pueden ser canceladas. Para Grupos: Cancelaciones deber&#225;n ser con siete (7) d&#237;as de anticipaci&#243;n forzosos. Los reembolsos completos solo se contemplaran con 24 horas de anticipaci&#243;n de su servicio. Aquellos clientes que no lleguen a su cita de servicio o excursi&#243;n a tiempo no recibir&#225;n reembolso alguno.</p>
+					</td>
+					<td width="10%">
+
+					</td>
+					<td width="45%">
+						<p>GENERAL CANCELLATION POLICIES</p>
+						<br>
+						<p class="clauses-text">Any and all changes to your reservations must be made in person by the original purchaser at the Vacation Planners desk with the original reservation receipt in hand. Changes may only be made once and reservations with changes may not be canceled. For Groups: Cancellations must be made seven ( 7) days prior to group arrival A full refund will only be given for cancellations made 24 hours prior to the service. Guests who do not arrive at the scheduled time of tour or service will not receive a refund.</p>
+					</td>
+				</tr>
+			</table>
+			<br><br>
+			<table>
+				<tr>
+					<td width="27.5%"></td>
+					<td width="45%">
+					   <p class="label-sign">YO ACEPTO / I AGREE</p>
+					</td>
+					<td width="27.5%"></td>
+				 </tr>
+			</table>
+			<br><br>
+			<table>
+				<tr>
+					<td width="45%">
+
+						<p class="clauses-text-2">CORPORACION INMOBILIARIA KTRC SA DE CV. ACT&#218;A COMO AGENTE INTERMEDIARIO DE COMPA&#209;&#205;AS DE TRANSPORTACI&#211;N Y PRESTADORES DE SERVICIOS TUR&#205;STICOS (&#8220;PROVEEDORES&#8221;), SIN QUE ASUMA RESPONSABILIDAD ALGUNA POR ACCIDENTES, MUERTE, PERDIDAS Y /O DA&#209;OS MATERIALES O HUMANOS, CAMBIOS DE HORARIO O ALGUNA OTRA IRREGULARIDAD ORIGINADA POR CASO FORTUITO O FUERZA MAYOR OCURRIDA DURANTE SU TRAVES&#205;A TODOS LO PROVEEDORES DE TOURS SON CONTRATISTAS INDEPENDIENTES. EL ACTO DE SUSCRIPCI&#211;N O COMPRA IMPLICA LA TOTAL CONFORMIDAD DE TODAS Y CADA UNA DE LAS CONDICIONES MENCIONADAS EN AMBOS LADOS DE ESTE CUP&#211;N.</p>
+					</td>
+					<td width="10%">
+
+					</td>
+					<td width="45%">
+						<p class="clauses-text-2">CORPORACION INMOBILIARIA KTRC SA DE CV. ACTS AS AN INTERMEDIARY AGENT BETWEEN THE TRANSPORTATION COMPANIES AND TOUR SERVICE PROVIDERS (&#8220;SUPPLIERS&#8221;) AND ITS NOT RESPONSIBLE FOR ANY ACCIDENT, DEATH, PERSONAL DAMAGE, LOSS/DAMAGE OF MATERIAL GOODS, SCHEDULE CHANGE AND /OR ANY OTHER IRREGULAR OCCURRENCE AND UNFORESSEN EVENT DURING YOUR EXCURSION ALL SUCH SUPPLIERS PROVIDING TOUR SERVICES ARE INDEPENDENT CONTRACTORS. THE ACT OF PURCHASING AN SERVICE BECOMES THE FULL AGREEMENT OF ALL THE TERMS AND CONDITIONS STATED ON BOTH SIDES OF THIS COUPON</p>
+					</td>
+				</tr>
+			</table>
+			{% endif %}
+			<pdf:nextpage />
+            {% endfor %}
+		</div>
+	</body>
+</html>

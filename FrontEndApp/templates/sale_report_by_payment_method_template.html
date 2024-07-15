@@ -1,0 +1,377 @@
+{% load static %}
+{% load FrontEndApp_tags %}
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Relacion de Cupones por Forma de Pago</title>
+		<style type="text/css">
+            .center-cropped {
+                width: 900px;
+                height: auto;
+            }
+            .logo{
+                height: 5cm;
+                width: auto;
+            }
+			.border{
+				border: solid 1px #000000;
+			}
+            .bb{
+                padding-bottom: -1px;
+				border-bottom: solid 1px #000000;
+			}
+            .bt{
+                padding-top: 1px;
+				border-top: solid 1px #000000;
+			}
+			.border td{
+				padding: 1px;
+				vertical-align:center;
+			}
+            .header th{
+                font-size: 8pt;
+                font-weight: normal;
+                border-bottom: solid 1px #000000;
+                text-align: left;
+                padding-bottom: -1px;
+                vertical-align:bottom;
+            }
+			.table-transfers td{
+				border: solid 1px #000000;
+				padding-top: 2px;
+				padding-bottom: 2px;
+				padding-left: 1px;
+				padding-right: 1px;
+				font-size: 12pt;
+			}
+			p{
+				padding: 1px;
+                margin: 1px
+			}
+
+			.total-underline{
+				text-align: right; 
+				border-top: solid 1px #000000;
+				padding-top: 2px;
+			}
+
+			table{
+				margin-top:1px;
+				margin-bottom:1px; 
+			}
+
+			.barcode{
+				padding-left: 12px;
+				margin-bottom: 2px;
+			}
+
+			.center {
+				font-family: Roboto;
+				color: black;
+				text-align: center;
+			}
+
+			.right {
+				font-family: Roboto;
+				color: black;
+				text-align: right;
+			}
+
+			.left {
+				font-family: Roboto;
+				color: black;
+				text-align: left;
+			}
+
+			.text-header{
+				font-size: 8pt;
+				font-weight: bold;
+				margin-top: 5px;
+				margin-bottom: 5px;
+			}
+
+			.text-user{
+				font-size: 8pt;
+				margin-top: 5px;
+				margin-bottom: 5px;
+			}
+
+			{% comment %} @font-face {
+				font-family: Roboto;
+				src: url(http://{{host}}{% static "/font/Roboto-Regular.ttf" %});
+			}
+			/* Bold */
+			@font-face {
+				font-family: Roboto;
+				src: url(http://{{host}}{% static "/font/Roboto-Bold.ttf" %});
+				font-weight: bold;
+			}
+			/* Italic */
+			@font-face {
+				font-family: Roboto;
+				src: url(http://{{host}}{% static "/font/Roboto-Italic.ttf" %});
+				font-style: italic;
+			}
+			/* Bold and italic */
+			@font-face {
+				font-family: Roboto;
+				src: url(http://{{host}}{% static "/font/Roboto-BoldItalic.ttf" %});
+				font-weight: bold;
+				font-style: italic;
+			}
+
+			@font-face {
+				font-family: Zen Antique;
+				src: url(http://{{host}}{% static "/font/ZenAntique-Regular.ttf" %});
+			} {% endcomment %}
+
+			@page {
+				size: {% if summary is not True %} legal {% else %} letter {% endif %} landscape;
+				@frame header { /* Static Frame */
+                    -pdf-frame-content: header_content;
+                    top: 0.5cm;
+                    margin-right: 1cm;
+                    margin-left: 1cm;
+                }
+				@frame content_frame { /* Content Frame */
+					margin-right: 1cm;
+					margin-left: 1cm;
+					margin-top: 2.6cm;
+					margin-bottom: 0.8cm;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div id="header_content">
+            <table>
+                <tr>
+                    <td width="60%">
+						<div class="center">
+							<h4>{{property.name}}</h4>
+						</div>
+                    </td>
+					<td width="10%"></td>
+                    <td width="30%"></td>
+                </tr>
+                <tr>
+                    <td>
+						<div class="center">
+							<h5>Relacion de Cupones por Forma de Pago</h5>
+						</div>
+                    </td>
+					<td><h5><pdf:pagenumber> / <pdf:pagecount></h5></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="center">
+                            <h5>Periodo: {{start_date|date:"d/m/Y"}} - {{due_date|date:"d/m/Y"}} &nbsp; &nbsp; Fecha Emision: {{date|date:"d/m/Y"}}</h5>
+                        </div>
+                    </td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </table>
+            <table class="header">
+                <tr>
+					<td width="2%">
+                    </td>
+                    {% if summary is not True %}
+                    <th width="7%">
+                        Cupon
+                    </th>
+                    <th width="4%">
+                        Cve
+                    </th>
+                    <th width="12%">
+                        Servicio
+                    </th>
+                    <th width="8%">
+                        Grupo
+                    </th>
+                    <th width="4%">
+                        Habit
+                    </th>
+                    <th width="4%" style="text-align: center;">
+                        Ingreso Neto
+                    </th>
+                    <th width="4%" style="text-align: center;">
+                        IVA
+                    </th>
+                    {% else %}
+                    <th width="13%">
+                        Representante
+                    </th>
+                    {% endif %}
+                    <th width="5%" style="text-align: center;">
+                        Ing.Dlls
+                    </th>
+                    <th width="5%" style="text-align: center;">
+                        Ing.PESOS
+                    </th>
+                    <th width="4%" style="text-align: center;">
+                        Desc
+                    </th>
+                    {% for payment_method in payment_methods %}
+                    <th style="text-align: center; font-size: 4pt;">
+                        {{payment_method.name|upper}}
+                    </th>
+                    {% endfor %}
+                </tr>
+            </table>
+			<br>
+		</div>
+		{% for representative_group in representatives %}
+        <table>
+			<tr>
+				<td width="15%" class="bb">
+					{{representative_group.representative.code}} - {{representative_group.representative.name|upper}}
+				</td>
+				<td width="85%"></td>
+			</tr>
+		</table>
+		{% for date_sale_group in representative_group.dates %}
+        {% if summary is not True %}
+		<table>
+			<tr>
+				<td width="8%">
+					{{date_sale_group.date|date:"d/m/Y"}}
+				</td>
+				<td width="92%"></td>
+			</tr>
+		</table>
+		<table>
+			{% for sale_data in date_sale_group.sales %}
+			<tr>
+				<td width="2%"></td>
+				<td width="7%">
+					{% if sale_data.sale.status == "R" %}
+                    R
+					{% elif sale_data.sale.status == "C" %}
+                    C
+                    {% endif %}
+					{{sale_data.sale.sale_key|stringformat:'0.8d'}}
+				</td>
+				{% if sale_data.sale.status == "C" %}
+				<td width="4%"></td>
+				<td width="12%"></td>
+				<td width="8%"></td>
+				{% else %}
+                <td width="4%">
+					{{sale_data.sale.service.id|stringformat:'0.4d'}}
+				</td>
+                <td width="12%">
+					{{sale_data.sale.service.name|upper}}
+				</td>
+                <td width="8%">
+					{% if sale_data.sale.service.business_group is not None %}
+					{{sale_data.sale.service.business_group.name}}
+					{% endif %}
+				</td>
+				{% endif %}
+				<td width="4%" style="text-align: center;">
+					{{sale_data.sale.room}}
+				</td>
+				{% if sale_data.sale.status == "C" %}
+				<td colspan="5" style="text-align: center;">*** CANCELADO</td>
+				{% for payment_method in payment_methods %}
+                    <td style="text-align: right;"></td>
+                {% endfor %}
+				{% else %}
+                <td width="4%" style="text-align: right;">
+					{{sale_data.totals.total_no_tax|currency:""}}
+				</td>
+                <td width="4%" style="text-align: right;">
+					{{sale_data.totals.total_only_tax|currency:""}}
+				</td>
+                <td width="5%" style="text-align: right;">
+					{{sale_data.totals.total_num|currency:""}}
+				</td>
+                <td width="5%" style="text-align: right;">
+					{{sale_data.totals.total_mn_num|currency:""}}
+				</td>
+                <td width="4%" style="text-align: right;">
+					{{sale_data.totals.discount_num|currency:"abs"}}
+				</td>
+				{% for payment_method in payment_methods %}
+                    <td style="text-align: right;">
+                        {% payment_ sale_data payment_method.id %}
+                    </td>
+                {% endfor %}
+				{% endif %}
+			</tr>
+			{% endfor %}
+		</table>
+        {% endif %}
+        <table>
+			<tr>
+				<td width="8%">
+					{{date_sale_group.date|date:"d/m/Y"}}
+				</td>
+                {% if summary is not True %}
+                <td width="37%"></td>
+                {% else %}
+                <td width="7%"></td>
+                {% endif %}
+                <td width="5%" class="bt" style="text-align: right;">
+					{{date_sale_group.total_import|currency:""}}
+				</td>
+                <td width="5%" class="bt" style="text-align: right;">
+					{{date_sale_group.total_import_mn|currency:""}}
+				</td>
+                <td width="4%"></td>
+				{% for payment_method in payment_methods %}
+                    <td class="bt" style="text-align: right;">
+                        {% total_ date_sale_group payment_method.id %}
+                    </td>
+                {% endfor %}
+			</tr>
+		</table>
+		{% endfor %}
+        <table>
+			<tr>
+                <td width="15%" class="bt">
+					{{representative_group.representative.code}} - {{representative_group.representative.name|upper}}
+				</td>
+                {% if summary is not True %}
+                <td width="30%"></td>
+                {% endif %}
+                <td width="5%" class="bt" style="text-align: right;">
+					{{representative_group.total_import|currency:""}}
+				</td>
+                <td width="5%" class="bt" style="text-align: right;">
+					{{representative_group.total_import_mn|currency:""}}
+				</td>
+                <td width="4%"></td>
+				{% for payment_method in payment_methods %}
+                    <td class="bt" style="text-align: right;">
+                        {% total_ representative_group payment_method.id %}
+                    </td>
+                {% endfor %}
+			</tr>
+		</table>
+        {% endfor %}
+        <table>
+			<tr>
+                {% if summary is not True %}
+                <td width="45%"></td>
+                {% else %}
+                <td width="15%"></td>
+                {% endif %}
+                <td width="5%" class="bt" style="text-align: right;">
+					{{total.total_import|currency:""}}
+				</td>
+                <td width="5%" class="bt" style="text-align: right;">
+					{{total.total_import_mn|currency:""}}
+				</td>
+                <td width="4%"></td>
+				{% for payment_method in payment_methods %}
+                    <td class="bt" style="text-align: right;">
+                        {% total_ total payment_method.id %}
+                    </td>
+                {% endfor %}
+			</tr>
+		</table>
+	</body>
+</html>
